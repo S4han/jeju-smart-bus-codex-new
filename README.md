@@ -28,3 +28,10 @@ TASK-002는 첨부 BIS 명세 검토 및 게이트 판정을 기록했으며, �
 사용자 승인으로 React·TypeScript·Vite 기반을 작성했다. 버스 조회/위치/지도/경로 기능은 미활성 상태다. [TASK-003 검증](docs/verification/TASK-003.md), [현재 환경 API 실측](docs/verification/TASK-002-LIVE-BIS.md)을 참고한다. 위의 미구성 표기는 이전 기록이다.
 
 Node 24에서 `npm ci`, `npm run dev`, `npm test`, `npm run build`, `npm run preview`를 사용한다. 제한된 환경의 npm 캐시는 `--cache /tmp/jeju-npm-cache`처럼 쓰기 가능한 경로를 지정할 수 있다. 환경 비밀값은 명령행이나 파일에 복사하지 않는다. 이 앱은 현재 환경변수를 필요로 하지 않는다.
+
+
+## TASK-004 로컬 위치 지정
+
+현재 위치 사용 버튼을 누를 때만 일회 위치 권한을 요청한다. 거부/실패 시 위도·경도로 수동 출발지를 지정할 수 있다. 앱은 위치를 서버/외부 지도 API에 보내거나 영구 저장하지 않으며, 위치 지우기/화면 이탈 시 선택을 해제한다. 브라우저·OS 자체 위치 산출 정책은 별도다.
+
+정류장·지도·도착정보·장소명 검색·목적지/경로 검색은 아직 제공하지 않는다. 상세 판정과 실행 증거는 [TASK-004 검증](docs/verification/TASK-004.md)을 따른다. `npm test` 97개 및 빌드 통과. 제공된 Playwright/Chromium 환경에서는 preview 실행 후 `node scripts/verify-local-ui.cjs`로 가상 위치 UI 검증을 수행할 수 있다.

@@ -6,16 +6,18 @@ async function files(dir) {
 }
 const rules = [
   ['server environment access', /(?:process\.env|import\.meta\.env|JEJU_BUS_API_KEY|serviceKey)/],
-  ['location or persistence API', /(?:navigator\.geolocation|localStorage|sessionStorage|indexedDB|document\.cookie)/],
+  ['persistence or continuous location API', /(?:localStorage|sessionStorage|indexedDB|document\.cookie|\bwatchPosition\b)/],
   ['external network API', /(?:\bfetch\s*\(|new\s+(?:WebSocket|XMLHttpRequest)|navigator\.sendBeacon)/],
 ];
 for (const file of [...await files('src'), ...await files('dist')]) {
   if (!/\.(?:js|ts|tsx|html|css)$/.test(file)) continue;
   const source = await readFile(file,'utf8');
+  if (file.startsWith('src/') && /(?:\.geolocation|\bgetCurrentPosition\b)/.test(source) && file !== 'src/browser/position.ts')
+    throw new Error(`Location API outside reviewed adapter in ${file}`);
   for (const [label,pattern] of rules) if (pattern.test(source)) throw new Error(`${label} found in ${file}`);
 }
 // Match known runtime secrets without printing their values or the matched text.
-for (const name of ['JEJU_BUS_API_KEY']) {
+for (const name of ['JEJU_BUS_API_KEY', 'VITE_NAVER_MAP_CLIENT_ID']) {
   const value = process.env[name];
   if (!value || value.length < 8) continue;
   for (const file of await files('dist')) {

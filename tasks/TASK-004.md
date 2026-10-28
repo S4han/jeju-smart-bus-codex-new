@@ -1,6 +1,6 @@
 # TASK-004 — 현재·수동 위치와 정류장·도착정보
 
-상태: 사전 검토 중 / NAVER 지도·공개 Client ID 구조 승인, 기능 구현 보류
+상태: 부분 구현 / 외부 전송 없는 현재 위치·수동 좌표 지정 통과, 97개 테스트·빌드·Chromium 검증 통과. 지도/정류장/도착/장소 검색은 해당 게이트 보류
 
 ## 선행 조건
 TASK-003, PRIV-001~004 통과. 정류장 GATE-01, 도착·시간표 GATE-04, 선택 공급자의 GATE-06 확인.
@@ -22,3 +22,5 @@ PRD 각 AC의 허용·거부·미선택·실패·빈 데이터·오래된 행을
 
 
 사전 기록: [TASK-004 준비](../docs/verification/TASK-004-PREPARATION.md), [NAVER 설정 안내](../docs/verification/NAVER-SETUP.md). 기능 게이트 통과 전 위치 수집·지도 로드는 하지 않는다.
+
+현재 환경 재검증 및 잔여 조건: [TASK-004 검증](../docs/verification/TASK-004.md). 환경변수 재등록은 불필요하다.

@@ -24,3 +24,5 @@ PRD 각 AC의 허용·거부·미선택·실패·빈 데이터·오래된 행을
 사전 기록: [TASK-004 준비](../docs/verification/TASK-004-PREPARATION.md), [NAVER 설정 안내](../docs/verification/NAVER-SETUP.md). 기능 게이트 통과 전 위치 수집·지도 로드는 하지 않는다.
 
 현재 환경 재검증 및 잔여 조건: [TASK-004 검증](../docs/verification/TASK-004.md). 환경변수 재등록은 불필요하다.
+
+후속: [현재 Station 실측 및 추가 도착 검증 제안](../docs/verification/TASK-004-LIVE-FOLLOWUP.md). Station 정상 조회·기존 파서 실데이터 검사 완료. 추가 3회 목적 변경은 자동 승인 검토 거절로 미실행/사용자 승인 대기.

@@ -21,3 +21,10 @@ TASK-002는 첨부 BIS 명세 검토 및 게이트 판정을 기록했으며, �
 
 - [TASK-002 게이트 판정](docs/verification/TASK-002.md)
 - [첨부 BIS 명세 검토](docs/verification/TASK-002-BIS-SPEC.md)
+
+
+## TASK-003 로컬 개발 기반
+
+사용자 승인으로 React·TypeScript·Vite 기반을 작성했다. 버스 조회/위치/지도/경로 기능은 미활성 상태다. [TASK-003 검증](docs/verification/TASK-003.md), [현재 환경 API 실측](docs/verification/TASK-002-LIVE-BIS.md)을 참고한다. 위의 미구성 표기는 이전 기록이다.
+
+Node 24에서 `npm ci`, `npm run dev`, `npm test`, `npm run build`, `npm run preview`를 사용한다. 제한된 환경의 npm 캐시는 `--cache /tmp/jeju-npm-cache`처럼 쓰기 가능한 경로를 지정할 수 있다. 환경 비밀값은 명령행이나 파일에 복사하지 않는다. 이 앱은 현재 환경변수를 필요로 하지 않는다.

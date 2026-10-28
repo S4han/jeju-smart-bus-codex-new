@@ -11,6 +11,7 @@ export interface ArrivalSnapshot {
 }
 interface ArrivalPanelProps {
   selectedStationId: string | null;
+  selectedStationName?: string | null;
   snapshot: ArrivalSnapshot | null;
   loading?: boolean;
 }
@@ -46,7 +47,7 @@ function ArrivalContent({ board }: { board: ArrivalBoard }) {
 }
 
 /** Display-only adapter. It neither loads data nor schedules provider requests. */
-export function ArrivalPanel({ selectedStationId, snapshot, loading = false }: ArrivalPanelProps) {
+export function ArrivalPanel({ selectedStationId, selectedStationName = null, snapshot, loading = false }: ArrivalPanelProps) {
   const [, refresh] = useState(0);
   const nowMs = Date.now();
   const matching = selectedStationId !== null && snapshot?.stationId === selectedStationId;
@@ -76,6 +77,7 @@ export function ArrivalPanel({ selectedStationId, snapshot, loading = false }: A
 
   return <section className="arrival-panel" aria-labelledby="arrival-title" aria-busy={loading}>
     <h2 id="arrival-title">정류장 도착정보</h2>
+    {selectedStationId !== null && <p>선택 정류장: {selectedStationName ? `${selectedStationName} · ` : ''}ID {selectedStationId}</p>}
     {selectedStationId === null ? <p role="status">정류장 조회를 준비 중입니다. 아직 선택된 정류장이 없습니다.</p> :
       loading ? <p role="status">선택한 정류장의 도착정보를 확인하고 있습니다.</p> :
         board ? <ArrivalContent board={board} /> : <p role="status">선택한 정류장의 도착정보가 확인되지 않았습니다.</p>}

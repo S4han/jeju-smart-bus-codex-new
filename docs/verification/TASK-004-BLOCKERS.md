@@ -28,6 +28,8 @@
 
 ## 근거 및 재개 순서
 
+새로운 공식 대조 원천 검토와 TAGO 1회 조건부 검증 제안은 [TASK-004-ALTERNATIVE-SOURCES.md](TASK-004-ALTERNATIVE-SOURCES.md)를 참고한다. 대안 자동 채택/추가 호출 승인으로 해석하지 않는다.
+
 1. [현재 실측 장부](TASK-004-LIVE-FOLLOWUP.md), [구현·검증](TASK-004.md), [개인정보 문의 초안/미발송 결정](NAVER-PRIVACY-INQUIRY.md).
 2. [공식 정류소 카탈로그](https://www.data.go.kr/catalog/15074255/openapi.json), [Maps Application 가이드](https://guide.ncloud-docs.com/docs/application-maps-app-vpc), [NCP 개인정보처리방침](https://privacy.navercloudcorp.com/ko/ncp/PrivacyPolicy/ncp-p). 이 링크들이 위 미확정 내용을 모두 증명한다는 뜻은 아니다.
 3. 이번 추가 공개 검색에서도 제주 localX/localY의 명시적 측지계와 Maps Web SDK 이용자별 위치 보관 조건을 확정하는 공식 근거는 확보하지 못했다. 비공식 코드·다른 서비스/기관 자료를 통과 근거로 사용하지 않았다. API/SDK 호출은 하지 않았다.

@@ -30,7 +30,7 @@ export class LocalLocation {
   private state: LocationState = { status: 'idle' };
   private revision = 0;
   private listeners = new Set<() => void>();
-  constructor(private readonly requestPosition: RequestPosition) {}
+  constructor(private readonly requestPosition: RequestPosition = (_success, failure) => failure('unsupported')) {}
   getSnapshot = (): LocationState => this.state;
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener);

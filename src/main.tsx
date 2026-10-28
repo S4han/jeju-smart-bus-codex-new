@@ -1,9 +1,16 @@
 import { createRoot } from 'react-dom/client';
+import { useState, useSyncExternalStore } from 'react';
 import { LocationPicker } from './LocationPicker';
 import { ArrivalPanel } from './ArrivalPanel';
+import { LocalLocation } from './domain/location';
+import { requestDevicePosition } from './browser/position';
 import './style.css';
 
 function App() {
+  const [locations] = useState(() => ({ origin: new LocalLocation(requestDevicePosition), destination: new LocalLocation() }));
+  const origin = useSyncExternalStore(locations.origin.subscribe, locations.origin.getSnapshot);
+  const destination = useSyncExternalStore(locations.destination.subscribe, locations.destination.getSnapshot);
+  const bothSelected = origin.status === 'selected' && destination.status === 'selected';
   return (
     <main>
       <header><a className="brand" href="#main">제주 스마트 버스<span>JEJU SMART BUS</span></a><span className="badge">준비 중</span></header>
@@ -12,11 +19,13 @@ function App() {
         <h1 id="title">어디로 가시나요?</h1>
         <p className="description">정확한 버스 정보를 확인할 수 있도록 준비하고 있습니다.</p>
         <div className="journey" aria-label="경로 검색 준비 상태">
-          <LocationPicker />
+          <LocationPicker model={locations.origin} />
           <div className="connector" aria-hidden="true"/>
-          <div className="place"><span className="dot destination" aria-hidden="true"/><div><strong>목적지</strong><p>장소 검색 준비 중</p></div></div>
+          <LocationPicker kind="destination" model={locations.destination} />
           <button disabled>버스 경로 찾기</button>
-          <p className="hint">데이터 검증이 끝나면 검색을 이용할 수 있습니다.</p>
+          <p className="hint" role="status">{bothSelected
+            ? '출발지와 목적지를 지정했습니다. 버스 데이터 검증이 끝나면 경로 조회를 이용할 수 있습니다.'
+            : '출발지와 목적지를 각각 지정해 주세요. 경로 조회는 버스 데이터 검증 후 제공됩니다.'}</p>
         </div>
       </section>
       <ArrivalPanel selectedStationId={null} snapshot={null} />

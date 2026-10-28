@@ -37,3 +37,5 @@ Node 24에서 `npm ci`, `npm run dev`, `npm test`, `npm run build`, `npm run pre
 정류장·지도·도착정보·장소명 검색·목적지/경로 검색은 아직 제공하지 않는다. 상세 판정과 실행 증거는 [TASK-004 검증](docs/verification/TASK-004.md)을 따른다. `npm test` 97개 및 빌드 통과. 제공된 Playwright/Chromium 환경에서는 preview 실행 후 `node scripts/verify-local-ui.cjs`로 가상 위치 UI 검증을 수행할 수 있다.
 
 후속 도착정보 검증: 사용자 승인하에 공공 API 누적 13/13회 실측을 완료했고, 초기 신선도 기준 60초를 확정했다. `arrival-board` 순수 모듈은 매핑/신선도가 검증된 행만 반환한다. 현재 단위 테스트 111개·빌드 통과이며, 이 모듈의 정류장 선택/네트워크/UI 연결은 미완료다. [후속 실측](docs/verification/TASK-004-LIVE-FOLLOWUP.md)을 참고한다.
+
+도착 표시 계층도 추가했다. 실제 앱에는 정류장 미선택 준비 상태만 표시하며, 외부 조회·예시 운행정보를 활성화하지 않는다. 60초 자동 만료·정류장 전환·빈 응답/장애/미확인 구분을 개발 전용 합성 화면에서 검증했다. 현재 테스트 120개·빌드 및 Chromium 1280px/390px 검증 통과. 실제 데이터 공급 연결은 미완료다.

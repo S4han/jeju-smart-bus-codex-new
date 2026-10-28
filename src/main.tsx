@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { LocationPicker } from './LocationPicker';
+import { ArrivalPanel } from './ArrivalPanel';
 import './style.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <p className="hint">데이터 검증이 끝나면 검색을 이용할 수 있습니다.</p>
         </div>
       </section>
+      <ArrivalPanel selectedStationId={null} snapshot={null} />
       <section className="notice" aria-labelledby="notice-title"><span className="notice-icon" aria-hidden="true">i</span><div><h2 id="notice-title">확인된 정보만 안내합니다</h2><p>현재 버스 조회와 경로 검색은 제공하지 않습니다. 현재 위치 사용 버튼을 눌렀을 때만 위치 권한을 요청합니다. 위치 지우기 또는 화면을 떠나면 앱의 위치 선택을 해제합니다.</p></div></section>
       <footer>제주 스마트 버스 <span>내 이동을 위한 작은 안내</span></footer>
     </main>

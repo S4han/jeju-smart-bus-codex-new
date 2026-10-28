@@ -41,9 +41,14 @@ export function buildArrivalBoard(input: {
   const arrivals: Arrival[] = [];
   // A repeated vehicle/stop identity may carry conflicting predictions: exclude the group.
   const counts = new Map<string, number>();
-  const identity = (row: Row) => JSON.stringify(
-    [row.routeId, row.stationOrd, row.updnDir, row.arrvVhId].map(value => typeof value === 'string' ? value : null),
-  );
+  const identity = (row: Row) => {
+    // Validation interprets stationOrd numerically: 24 and 024 are the same stop event.
+    // Keep route, direction and vehicle IDs exact; no provider ID equivalence is assumed.
+    const order = typeof row.stationOrd === 'string' && /^\d+$/.test(row.stationOrd)
+      && Number.isSafeInteger(Number(row.stationOrd)) ? Number(row.stationOrd) : null;
+    return JSON.stringify([row.routeId, row.updnDir, row.arrvVhId]
+      .map(value => typeof value === 'string' ? value : null).concat(order === null ? null : String(order)));
+  };
   for (const row of response.data) {
     const key = identity(row);
     counts.set(key, (counts.get(key) ?? 0) + 1);

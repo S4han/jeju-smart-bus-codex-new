@@ -62,6 +62,15 @@ describe('station arrival board (AC-005/014, NFR-004)', () => {
     if (result.status !== 'checked') throw new Error('unexpected board');
     expect(result.arrivals).toEqual([]); expect(result.excluded.duplicate).toBe(2);
   });
+  it('rejects conflicting predictions for numerically equivalent stop orders', () => {
+    const result = buildArrivalBoard({ ...base, rows: [row,
+      { ...row, stationOrd: '024', predictTravTm: '9' },
+      { ...row, arrvVhId: '124', predictTravTm: '22' },
+    ] });
+    if (result.status !== 'checked') throw new Error('unexpected board');
+    expect(result.arrivals.map(arrival => arrival.predictedMinutes)).toEqual([22]);
+    expect(result.excluded.duplicate).toBe(2);
+  });
   it('allows distinct vehicles and preserves provider input and prediction units', () => {
     const rows = [Object.freeze({ ...row }), Object.freeze({ ...row, arrvVhId: '124', predictTravTm: '22' })];
     const before = JSON.stringify(rows);

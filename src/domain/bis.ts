@@ -9,7 +9,8 @@ function text(value: unknown): string | null {
 }
 function numeric(value: unknown): number | null {
   const s = text(value);
-  if (s === null) return null;
+  // Provider values are decimal text; Number alone also accepts hex/binary literals.
+  if (s === null || !/^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/.test(s)) return null;
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
 }

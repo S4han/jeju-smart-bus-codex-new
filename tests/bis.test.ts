@@ -17,6 +17,11 @@ describe('public data boundaries (NFR-004)', () => {
   it('rejects missing identity rather than manufacturing it', () => {
     expect(parseStation({ ...station, stationId: '' })).toEqual({ status:'error', kind:'format' });
   });
+  it.each(['0x7e', '0b1111110', '0o176', '1.265e2'])('does not reinterpret non-decimal coordinate text %s', localX => {
+    const result = parseStation({ ...station, localX });
+    if (result.status !== 'ok') throw new Error('unexpected identity failure');
+    expect(result.data.coordinates).toBeNull();
+  });
   it('preserves unknown station activation status', () => {
     const result = parseStation({ ...station, useYn:'A' });
     if (result.status !== 'ok') throw new Error('unexpected parse failure');
@@ -32,6 +37,9 @@ describe('public data boundaries (NFR-004)', () => {
   it('retains repeat visits as separate stop events', () => {
     const a = parseStopEvent(event), b = parseStopEvent({ ...event, stationOrd:'8' });
     expect(a.status).toBe('ok'); expect(b.status).toBe('ok'); expect(a).not.toEqual(b);
+  });
+  it.each(['0x2', '0b10', '2e0'])('does not reinterpret non-decimal stop order %s', stationOrd => {
+    expect(parseStopEvent({ ...event, stationOrd })).toEqual({ status: 'error', kind: 'format' });
   });
   it('does not accept a stop event for a different station', () => {
     const e = parseStopEvent(event);

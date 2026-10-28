@@ -35,3 +35,5 @@ Node 24에서 `npm ci`, `npm run dev`, `npm test`, `npm run build`, `npm run pre
 현재 위치 사용 버튼을 누를 때만 일회 위치 권한을 요청한다. 거부/실패 시 위도·경도로 수동 출발지를 지정할 수 있다. 앱은 위치를 서버/외부 지도 API에 보내거나 영구 저장하지 않으며, 위치 지우기/화면 이탈 시 선택을 해제한다. 브라우저·OS 자체 위치 산출 정책은 별도다.
 
 정류장·지도·도착정보·장소명 검색·목적지/경로 검색은 아직 제공하지 않는다. 상세 판정과 실행 증거는 [TASK-004 검증](docs/verification/TASK-004.md)을 따른다. `npm test` 97개 및 빌드 통과. 제공된 Playwright/Chromium 환경에서는 preview 실행 후 `node scripts/verify-local-ui.cjs`로 가상 위치 UI 검증을 수행할 수 있다.
+
+후속 도착정보 검증: 사용자 승인하에 공공 API 누적 13/13회 실측을 완료했고, 초기 신선도 기준 60초를 확정했다. `arrival-board` 순수 모듈은 매핑/신선도가 검증된 행만 반환한다. 현재 단위 테스트 111개·빌드 통과이며, 이 모듈의 정류장 선택/네트워크/UI 연결은 미완료다. [후속 실측](docs/verification/TASK-004-LIVE-FOLLOWUP.md)을 참고한다.

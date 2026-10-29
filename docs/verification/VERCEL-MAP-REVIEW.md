@@ -27,3 +27,16 @@ npm test: Vitest 152개+Node guard 3개 통과. 추가 3개는 정확한 지도 
 scripts/verify-deployed-map.cjs는 실제 배포 origin과 미승인 origin을 Playwright로 재현하되 모든 자산/SDK를 로컬 응답으로 가로챈다. 동의 전/거부 후 SDK 0회, 동의 후 스텁 1회, 목록/정류장 마커 집합 일치, 배포 BIS 버튼 비활성, 미승인 origin 지도 차단, 실제 외부 요청 0을 확인했다. 공개 지도 ID가 들어갈 수 있는 원문 요청 URL은 출력하지 않았다. 실제 NAVER·BIS·호스트 루트 요청은 이번 변경에 없다.
 
 기존 build:review 및 독립 HTML 생성기는 ID 없는 오프라인 미리보기 용도로 유지한다. 기존 verify-vercel-review.cjs는 build:review 산출물에 적용하는 검사이며 지도 배포 산출물에는 verify-deployed-map.cjs를 사용한다. 실제 타일/도메인 인증·운영 비용·법적 개인정보 게이트는 여전히 미확인이다. 기존 두 저장소·기존 Vercel 프로젝트·메일 변경 없음.
+
+
+## 인증 실패 화면 후 referrer 보완 — 2026-10-29
+
+사용자가 재배포 후에도 NAVER Open API 인증 실패 문구와 로딩 상태가 보이는 화면을 제공했다. 사용자 화면의 위치/정류장/좌표는 별도로 저장하지 않는다. 사용자 브라우저에서 발생한 실제 SDK 요청 횟수는 이 환경에서 집계하지 못하므로 과거 자동 검사기 진입 3회를 전체 사용자 사용량으로 주장하지 않는다. BIS 19/19 소진과 추가 조회 차단은 유지한다.
+
+코드의 SDK 진입 스크립트는 referrerPolicy=origin이지만 문서 메타와 Vercel 응답 헤더는 no-referrer였다. SDK가 추가로 삽입하는 스크립트에는 자체 referrer 정책이 없을 수 있어 사이트 origin이 누락되는 경우를 모의 브라우저에서 재현했다. 수정 전 entryHasOriginOnly=true, followupHasOriginOnly=false였고 실제 외부 요청은 0이었다. 이 결과는 실제 NAVER 내부 요청이나 계정 설정을 실측한 것이 아니라 브라우저 정책 불일치의 재현이다.
+
+app.html 메타와 새 프로젝트 Vercel Referrer-Policy를 origin으로 맞췄다. 전체 페이지 주소 대신 HTTPS origin만 전달하며 경로/쿼리/좌표/앱 상태를 전달하지 않는다. SDK 진입의 명시적 origin 정책도 유지했다. 동의 전 외부 지도 요청 없음, 제한된 지도 출처/CSP, 실패 후 재시도 없음은 유지한다. BIS 요청 함수의 명시적 no-referrer, 독립 HTML의 no-referrer/connect-src none은 유지했다. 외부 수집 호스트를 허용하거나 키/환경변수 값을 바꾸지 않았다.
+
+verify-map-referrer.cjs는 실제 배포 출처와 Vercel 헤더를 모의 적용하고 SDK 및 후속 스크립트를 로컬 응답으로 가로챈다. 문서 주소에 합성 쿼리가 있어도 수정 후 entryHasOriginOnly=true, followupHasOriginOnly=true, forbiddenRequests=0, actualProviderRequests=0을 확인했다. 실제 식별자/원문 URL/좌표는 출력하지 않았다. npm test 152개 Vitest+3개 Node guard, build:vercel, 기존 배포 지도 모의 검증 통과.
+
+이 수정은 도메인 기반 인증에 필요한 origin 전달 누락을 보완하지만 사용자 화면의 실제 실패 원인이 이것 하나였다고 단정하지 않는다. NAVER 등록 도메인·Application/Client ID 대응·상품 활성 여부는 계정에서 확인해야 한다. 동일 새 프로젝트 main 자동 배포로 반영하고 실제 인증/타일 결과는 사용자 브라우저 확인을 따른다. 기존 두 저장소/기존 Vercel/메일 변경 없음.

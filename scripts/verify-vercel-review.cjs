@@ -25,7 +25,7 @@ const fs=require('node:fs');const http=require('node:http');
    page.on('pageerror',()=>{errors++;});
    const response=await page.goto(origin+'/');
    assert.equal(response.headers()['cache-control'],'no-store');
-   assert.equal(response.headers()['referrer-policy'],'no-referrer');
+   assert.equal(response.headers()['referrer-policy'],'origin');
    const stop=JSON.parse(fs.readFileSync('src/data/stations.json','utf8')).find(row=>row.id==='406000191');
    for(const label of ['출발지','목적지']){
     const picker=page.getByRole('region',{name:label+' 지정',exact:true});

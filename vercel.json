@@ -13,7 +13,7 @@
         },
         {
           "key": "Referrer-Policy",
-          "value": "no-referrer"
+          "value": "origin"
         },
         {
           "key": "X-Content-Type-Options",

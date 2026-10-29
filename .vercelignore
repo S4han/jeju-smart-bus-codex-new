@@ -13,4 +13,3 @@ tests/
 .env.*
 *.sqlite
 *.png
-server/

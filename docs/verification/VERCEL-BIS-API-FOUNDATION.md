@@ -1,6 +1,12 @@
 # Vercel BIS API 기반 구현 — 저장소 연결 전 차단
 
-## 최신 배포 결과 및 보존 범위
+## 최신 수정 및 재배포
+
+2026-10-29 사용자 제공 Build Logs에서 f304bf5 실패 원인을 확인했다: `[unused_function]` — functions의 api/arrivals.py 패턴에 해당하는 함수가 발견되지 않았다. 기존 진입점은 handler를 import만 했다. Vercel 공개 fs-detectors는 Python 파일의 findAppOrHandler 결과로 함수 인식 여부를 판단한다. api/arrivals.py 안에 BaseHTTPRequestHandler를 상속하는 handler 클래스를 직접 선언하고 검증된 서버 메서드에 위임하도록 수정했다. server 파일과 자료의 includeFiles를 복구하고 정적 /api rewrite를 제거했다. 공유 예산 저장소는 여전히 None이고 UI도 비활성이다. 실제 BIS/SDK 요청 없이 Python 16개 테스트와 build:vercel 통과. 누적 23/30·잔여 7회 보존. 배포 결과는 GitHub Vercel 상태로 별도 확인한다.
+
+공식 인식 경계 참고: https://github.com/vercel/vercel/blob/main/packages/fs-detectors/src/detect-builders.ts 및 https://github.com/vercel/vercel/blob/main/packages/fs-detectors/src/python.ts (2026-10-29 확인).
+
+## 과거 실패 후 정적 복구 기록
 
 Python API를 포함한 f304bf5 배포는 Vercel GitHub 상태에서 failure였다. 제공된 상태에는 빌드 로그 읽기 명령만 있으며 구체 오류는 없다. 현재 Vercel 인증/로그 접근 도구가 없어 실패 원인을 확정하지 않았다. 이전 정적 배포를 정상화하기 위해 API 진입점은 server/vercel_entry.py로 보존하고 실제 api/arrivals.py 및 함수 설정을 배포 대상에서 제거한다. 정적 API 비활성 rewrite를 복구하고 서버 코드는 .vercelignore로 제외한다. 로컬 HTTP Handler 503 검증과 공유 장부 계약/테스트는 보존한다. 아래 함수 경로 설명은 최초 배포 시도 당시 설계이며 실제 함수 배포 성공 증거가 아니다.
 

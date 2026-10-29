@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { offsetToReveal } from './viewport';
 import type { LocalPoint } from '../domain/location';
 import type { NearbyResult } from '../domain/nearby';
 import { hasMapClientId, loadNaverMaps, markMapUnavailable, type MapInstance, type NaverMaps } from './naver';
@@ -43,7 +44,7 @@ function Canvas({ point, stations, selectedId, onSelect }: {
       });
       removeTileListener = () => maps.Event.removeListener(listener);
       setReady({ maps, map });
-    }).catch(() => { if (!disposed) markMapUnavailable(); });
+    }).catch(() => { if (!disposed) { unavailable(); markMapUnavailable(); } });
     return () => {
       window.removeEventListener('pagehide', destroy);
       window.removeEventListener('jeju-map-unavailable', unavailable); destroy();
@@ -66,6 +67,17 @@ function Canvas({ point, stations, selectedId, onSelect }: {
       ...stations.map(station => new ready.maps.LatLng(station.latitude, station.longitude))],
     { maxZoom: 15, top: 30, right: 30, bottom: 30, left: 30 });
   }, [ready, stations, point]);
+  useEffect(() => {
+    if (!ready || !selectedId) return;
+    const station = stations.find(station => station.id === selectedId);
+    if (!station) return;
+    const projection = ready.map.getProjection();
+    const target = new ready.maps.LatLng(station.latitude, station.longitude);
+    const offset = offsetToReveal(projection.fromCoordToOffset(target),
+      projection.fromCoordToOffset(ready.map.getCenter()), ready.map.getSize(),
+      { top: 30, right: 30, bottom: 30, left: 30 });
+    if (offset) ready.map.panTo(projection.fromOffsetToCoord(new ready.maps.Point(offset.x, offset.y)));
+  }, [ready, stations, selectedId]);
   useEffect(() => {
     if (!ready || !element.current) return;
     const resize = new ResizeObserver(() => ready.map.autoResize()); resize.observe(element.current);

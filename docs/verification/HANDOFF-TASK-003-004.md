@@ -4,6 +4,8 @@
 
 ## 현재 상태와 다음 작업
 
+최신 소스 참고 구현: 사용자 지시에 따라 기존 jeju-smart-bus의 로더 환경 주입과 화면 밖 선택 정류장 panTo 패턴을 새 앱에 맞춰 적용했다. Vitest 149개 + Node guard 3개·빌드·모의 브라우저 통과. [참고/구현 기록](TASK-004-MAP-REFERENCE.md)을 먼저 읽는다. 실제 외부 요청 증가 없음.
+
 최신 연결 진단: SDK/타일 경로와 별도로 nrbe 루트 GET 1회에서도 Envoy의 upstream remote connection failure와 HTTP 503을 확인했다. 브라우저 CSP 외부에서 재현됐으나 발생 계층은 미확정이다. [연결 진단](TASK-004-MAP-NETWORK-DIAGNOSIS.md)과 JSON을 참조한다. SDK 진입 누적 3회·BIS 19/19는 그대로이며 루트 진단은 별도 1회다.
 
 - TASK-004 부분 구현 유지. 지도 SDK/정적 이미지 HTTP 200 확인, 실제 타일 표시는 nrbe.map.naver.net HTTP 503으로 실패. 일반 장소 검색·시간표 대체 및 기존 게이트는 미완료. TASK-005 자동 착수 금지.
@@ -20,7 +22,7 @@
 
 ## 최신 검증
 
-npm test: Vitest 139개 + Node guard 3개 통과. 타입/빌드/클라이언트 비밀값 검사 통과. 모의 SDK 390/1280px 동의·목록/핀 집합·양방향 선택·인증 실패·타일 타임아웃 검증 통과. 위치 삭제·pagehide·타일 완료의 타이머 정리, 실패 뒤 늦은 타일 이벤트 무효화도 가상 시계로 확인했다. CSP 모의/BIS 프록시 전 차단·독립 HTML/제한 iframe·JavaScript 없는 Index 통과. 실제 지도 성공은 미확인이다.
+npm test: Vitest 149개 + Node guard 3개 통과. 타입/빌드/클라이언트 비밀값 검사 통과. 모의 SDK 390/1280px 동의·목록/핀 집합·양방향 선택·인증 실패·타일 타임아웃 검증 통과. 위치 삭제·pagehide·타일 완료의 타이머 정리, 실패 뒤 늦은 타일 이벤트 무효화도 가상 시계로 확인했다. CSP 모의/BIS 프록시 전 차단·독립 HTML/제한 iframe·JavaScript 없는 Index 통과. 실제 지도 성공은 미확인이다.
 
 기존 두 저장소·Vercel·메일 변경 금지 유지. 질문/로그에 Client ID 값을 노출하지 않는다. 변경은 새 저장소의 로컬 작업 폴더에만 있다.
 

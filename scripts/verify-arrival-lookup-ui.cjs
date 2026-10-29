@@ -16,8 +16,11 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
    const stop=JSON.parse(fs.readFileSync('src/data/stations.json','utf8')).find(row=>row.id==='406000191');
    const picker=page.getByRole('region',{name:'출발지 지정',exact:true});
    await picker.getByLabel('정류장명',{exact:true}).fill(stop.name);
-   await picker.getByRole('list',{name:'출발지 정류장 검색 결과'}).getByRole('button',{name:`${stop.name} · ID ${stop.id}`,exact:true}).click();
-   await page.getByRole('region',{name:'출발지 주변 정류장',exact:true}).getByRole('button').filter({hasText:'ID 406000191'}).click();
+   const choice=picker.getByRole('list',{name:'출발지 정류장 검색 결과'}).getByRole('button',{name:`${stop.name} · ID ${stop.id}`,exact:true});
+   if(width===390) await choice.press('Enter'); else await choice.click();
+   // Search selection must identify the arrival station without a second nearby-list click.
+   await page.getByRole('region',{name:'정류장 도착정보',exact:true}).getByText(`선택 정류장: ${stop.name} · ID ${stop.id}`,{exact:true}).waitFor();
+   assert.equal(await picker.getByRole('status').evaluate(el=>el===document.activeElement),true);
    assert.equal(calls,0);
    const panel=page.getByRole('region',{name:'정류장 도착정보',exact:true});
    await page.getByRole('button',{name:'선택 정류장 도착정보 조회',exact:true}).click();

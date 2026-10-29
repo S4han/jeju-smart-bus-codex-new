@@ -1,5 +1,5 @@
-import { useEffect, useState, useSyncExternalStore } from 'react';
-import { LocalLocation, type LocationFailure } from './domain/location';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { LocalLocation, type LocalPoint, type LocationFailure } from './domain/location';
 import { requestDevicePosition } from './browser/position';
 import stations from './data/stations.json';
 
@@ -12,7 +12,10 @@ const messages: Record<LocationFailure, string> = {
   invalid: '위도는 -90~90, 경도는 -180~180 범위의 숫자로 입력해 주세요.',
 };
 
-export function LocationPicker({ kind = 'origin', model }: { kind?: 'origin' | 'destination'; model?: LocalLocation }) {
+export function LocationPicker({ kind = 'origin', model, onStationSelect }: {
+  kind?: 'origin' | 'destination'; model?: LocalLocation;
+  onStationSelect?: (station: { id: string; name: string }, point: LocalPoint) => void;
+}) {
   const origin = kind === 'origin';
   const label = origin ? '출발지' : '목적지';
   const [location] = useState(() => model ?? new LocalLocation(origin ? requestDevicePosition : undefined));
@@ -21,6 +24,7 @@ export function LocationPicker({ kind = 'origin', model }: { kind?: 'origin' | '
   const [longitude, setLongitude] = useState('');
   const [query, setQuery] = useState('');
   const [selectedName, setSelectedName] = useState('');
+  const statusRef = useRef<HTMLDivElement>(null);
   const search = query.trim();
   const matches = search ? stations.filter(station => station.name.includes(search)) : [];
   const reset = () => { location.clear(); setLatitude(''); setLongitude(''); setQuery(''); setSelectedName(''); };
@@ -29,6 +33,9 @@ export function LocationPicker({ kind = 'origin', model }: { kind?: 'origin' | '
     window.addEventListener('pagehide', forget);
     return () => { window.removeEventListener('pagehide', forget); location.clear(); };
   }, [location]);
+  useEffect(() => {
+    if (selectedName && state.status === 'selected') statusRef.current?.focus();
+  }, [selectedName, state]);
 
   return (
     <section className="location-picker" aria-labelledby={`${kind}-title`}>
@@ -48,6 +55,8 @@ export function LocationPicker({ kind = 'origin', model }: { kind?: 'origin' | '
           <ul aria-label={`${label} 정류장 검색 결과`}>{matches.map(station => <li key={station.id}>
             <button type="button" onClick={() => {
               location.selectManual(String(station.latitude), String(station.longitude));
+              const selected = location.getSnapshot();
+              if (selected.status === 'selected') onStationSelect?.(station, selected.point);
               setSelectedName(`${station.name} · ID ${station.id}`); setQuery(''); setLatitude(''); setLongitude('');
             }}>{station.name} · ID {station.id}</button>
           </li>)}</ul>
@@ -66,11 +75,11 @@ export function LocationPicker({ kind = 'origin', model }: { kind?: 'origin' | '
           if (location.getSnapshot().status === 'selected') { setLatitude(''); setLongitude(''); }
         }}>이 좌표를 {label}로 선택</button>
       </fieldset></details>
-      <div role="status" aria-live="polite" className="location-status">
+      <div ref={statusRef} role="status" aria-live="polite" tabIndex={-1} className="location-status">
         {state.status === 'idle' && `아직 ${label}를 선택하지 않았습니다.`}
         {state.status === 'pending' && '브라우저 위치 권한을 확인해 주세요. 기다리지 않고 좌표로 지정할 수도 있습니다.'}
         {state.status === 'error' && messages[state.reason]}
-        {state.status === 'selected' && <><strong>{state.source === 'device' ? '현재 위치' : '입력한 좌표'}를 {label}로 선택했습니다.</strong><span>아래에서 주변 정류장을 확인할 수 있습니다. 경로 조회는 준비 중입니다.</span></>}
+        {state.status === 'selected' && <><strong>{selectedName || (state.source === 'device' ? '현재 위치' : '입력한 좌표')}를 {label}로 선택했습니다.</strong><span>아래에서 주변 정류장을 확인할 수 있습니다. 경로 조회는 준비 중입니다.</span></>}
       </div>
       <button type="button" className="text-button" onClick={reset}>{origin ? '위치 지우기' : '목적지 지우기'}</button>
     </section>

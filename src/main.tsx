@@ -32,8 +32,10 @@ function App() {
         <p className="description">출발지와 목적지를 지정하고 가까운 정류장을 찾아보세요.</p>
         <div className="journey" aria-label="경로 검색 준비 상태">
           <div className="journey-grid">
-            <LocationPicker model={locations.origin} />
-            <LocationPicker kind="destination" model={locations.destination} />
+            <LocationPicker model={locations.origin}
+              onStationSelect={(selected, point) => setStationSelection({ ...selected, point, kind: 'origin' })} />
+            <LocationPicker kind="destination" model={locations.destination}
+              onStationSelect={(selected, point) => setStationSelection({ ...selected, point, kind: 'destination' })} />
           </div>
           <button disabled>버스 경로 찾기</button>
           <p className="hint" role="status">{bothSelected

@@ -25,13 +25,13 @@ const {classifyRequest}=require('./map-verification-guard.cjs');
    const image=src=>new Promise(resolve=>{const i=new Image();i.onload=()=>resolve(true);i.onerror=()=>resolve(false);i.src=src;document.body.append(i);});
    const loaded=await Promise.all([
     script('http://oapi.map.naver.com/csp-sample.js'),script('http://nrbe.map.naver.net/csp-sample.js'),script('http://nrbe.pstatic.net/csp-sample.js'),
-    image('http://static.naver.net/csp-sample.png'),image('http://nrbe.map.naver.net/csp-sample.png')]);
+    image('http://static.naver.net/csp-sample.png'),image('http://nrbe.map.naver.net/csp-sample.png'),image('http://nrbe.pstatic.net/csp-sample.png'),image('https://ssl.pstatic.net/csp-sample.png')]);
    const denied=await script('https://unapproved.invalid/csp-sample.js');
    await new Promise(resolve=>setTimeout(resolve,50));
    return {loaded,denied,violations,count:window.__cspLoaded};
   });
-  assert.deepEqual(result.loaded,[true,true,true,true,true]);assert.equal(result.count,3);assert.equal(result.denied,false);
-  assert.equal(external,5);assert.deepEqual(result.violations,[{directive:'script-src-elem',host:'unapproved.invalid'}]);
+  assert.deepEqual(result.loaded,[true,true,true,true,true,true,true]);assert.equal(result.count,3);assert.equal(result.denied,false);
+  assert.equal(external,7);assert.deepEqual(result.violations,[{directive:'script-src-elem',host:'unapproved.invalid'}]);
   console.log('Map CSP mock: HTTP subresources upgraded; observed scripts/images allowed; unknown script blocked; BIS route blocked before proxy; actual provider requests 0.');
  }finally{await browser.close();}
 })().catch(()=>{console.error('Map CSP mock failed; no resource URL or identifier logged.');process.exitCode=1;});

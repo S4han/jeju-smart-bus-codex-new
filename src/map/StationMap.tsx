@@ -1,16 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { createStationPin, updateStationPin } from './markerContent';
 import { offsetToReveal } from './viewport';
 import type { LocalPoint } from '../domain/location';
 import type { NearbyResult } from '../domain/nearby';
 import { hasMapClientId, loadNaverMaps, markMapUnavailable, type MapInstance, type NaverMaps } from './naver';
 
-function pin(id: string, selected: boolean): HTMLElement {
-  const element = document.createElement('span');
-  element.className = selected ? 'map-pin map-pin-selected' : 'map-pin';
-  element.dataset.stationId = id;
-  element.textContent = selected ? '✓' : '●';
-  return element;
-}
 function Canvas({ point, stations, selectedId, onSelect }: {
   point: LocalPoint; stations: readonly NearbyResult[]; selectedId: string | null;
   onSelect: (station: NearbyResult) => void;
@@ -19,6 +13,8 @@ function Canvas({ point, stations, selectedId, onSelect }: {
   const [ready, setReady] = useState<{ maps: NaverMaps; map: MapInstance } | null>(null);
   const [tilesReady, setTilesReady] = useState(false);
   const [failed, setFailed] = useState(false);
+  const pins = useRef<{ id: string; element: HTMLButtonElement }[]>([]);
+  const selected = useRef(selectedId); selected.current = selectedId;
   const callback = useRef(onSelect); callback.current = onSelect;
   useEffect(() => {
     let disposed = false; let map: MapInstance | null = null;
@@ -53,13 +49,31 @@ function Canvas({ point, stations, selectedId, onSelect }: {
   useEffect(() => {
     if (!ready) return;
     const markers = stations.map(station => {
+      const element = createStationPin(station.id, station.name);
+      updateStationPin(element, station.id === selected.current);
+      const choose = () => callback.current(station);
+      const keydown = (event: KeyboardEvent) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault(); event.stopPropagation(); choose();
+      };
+      element.addEventListener('keydown', keydown);
       const marker = new ready.maps.Marker({ map: ready.map,
         position: new ready.maps.LatLng(station.latitude, station.longitude),
-        title: station.name, icon: { content: pin(station.id, station.id === selectedId) } });
-      const listener = ready.maps.Event.addListener(marker, 'click', () => callback.current(station));
-      return { marker, listener };
+        title: station.name, icon: { content: element, anchor: new ready.maps.Point(22, 22) } });
+      const listener = ready.maps.Event.addListener(marker, 'click', choose);
+      return { id: station.id, element, keydown, marker, listener };
     });
-    return () => { for (const { marker, listener } of markers) { ready.maps.Event.removeListener(listener); marker.setMap(null); } };
+    pins.current = markers;
+    return () => {
+      pins.current = [];
+      for (const { element, keydown, marker, listener } of markers) {
+        element.removeEventListener('keydown', keydown);
+        ready.maps.Event.removeListener(listener); marker.setMap(null);
+      }
+    };
+  }, [ready, stations]);
+  useEffect(() => {
+    for (const pin of pins.current) updateStationPin(pin.element, pin.id === selectedId);
   }, [ready, stations, selectedId]);
   useEffect(() => {
     if (!ready || stations.length === 0) return;

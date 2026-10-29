@@ -1,12 +1,12 @@
 const {chromium}=require('playwright');const assert=require('node:assert/strict');const fs=require('node:fs');
 // SDK stand-in only. Every external request is intercepted; no NAVER allowance is used.
 const sdk=`
-window.__mapCreates=0;window.__mapDestroys=0;window.__maps=[];window.__mapPans=0;window.__mapFits=0;
+window.__mapCreates=0;window.__mapDestroys=0;window.__maps=[];window.__mapPans=0;window.__mapFits=0;window.__markerCreates=0;
 window.naver={maps:{
  Point:class {constructor(x,y){this.x=x;this.y=y;}},
  LatLng:class {constructor(lat,lng){this.lat=lat;this.lng=lng;}},
  Map:class {constructor(element,options){this.element=element;this.options=options;window.__mapCreates++;window.__maps.push(this);} destroy(){window.__mapDestroys++;this.element.replaceChildren();} autoResize(){} fitBounds(){window.__mapFits++;} getCenter(){return this.options.center;} getSize(){return {width:390,height:320};} getProjection(){return {fromCoordToOffset:p=>({x:p.lng*100000,y:p.lat*100000}),fromOffsetToCoord:p=>({lng:p.x/100000,lat:p.y/100000})};} panTo(point){window.__mapPans++;this.options.center=point;}},
- Marker:class {constructor(options){this.options=options;options.map.element.append(options.icon.content);} setMap(map){if(!map)this.options.icon.content.remove();} setIcon(icon){this.options.icon.content.replaceWith(icon.content);this.options.icon=icon;}},
+ Marker:class {constructor(options){window.__markerCreates++;this.options=options;options.map.element.append(options.icon.content);} setMap(map){if(!map)this.options.icon.content.remove();} setIcon(icon){this.options.icon.content.replaceWith(icon.content);this.options.icon=icon;}},
  Event:{addListener(target,name,callback){if(name==='tilesloaded'){const listener={callback,active:true};target.tileListener=listener;if(!window.__holdTiles)queueMicrotask(()=>{if(listener.active)callback();});return listener;}target.options.icon.content.onclick=callback;return target;} ,removeListener(target){if('active' in target){target.active=false;return;}target.options.icon.content.onclick=null;}}
 }};`;
 (async()=>{
@@ -47,6 +47,21 @@ window.naver={maps:{
    assert.equal(await page.evaluate(()=>window.__mapFits),initialFits);
    await panel.getByRole('list').getByRole('button').filter({hasText:'ID '+station.id}).click();
    assert.equal(await panel.locator('.map-pin-selected').getAttribute('data-station-id'),station.id);
+   const markerCreates=await page.evaluate(()=>window.__markerCreates);
+   const otherPin=panel.locator('.map-pin[data-station-id="'+other+'"]');
+   await otherPin.focus();
+   await page.evaluate(()=>{window.__focusedPin=document.activeElement;});
+   await otherPin.press('Enter');
+   assert.equal(await panel.getByRole('list').getByRole('button').filter({hasText:'ID '+other}).getAttribute('aria-pressed'),'true');
+   assert.equal(await otherPin.getAttribute('aria-pressed'),'true');
+   assert.equal(await page.evaluate(()=>document.activeElement===window.__focusedPin),true);
+   const stationPin=panel.locator('.map-pin[data-station-id="'+station.id+'"]');
+   await stationPin.focus();await stationPin.press('Space');
+   assert.equal(await panel.getByRole('list').getByRole('button').filter({hasText:'ID '+station.id}).getAttribute('aria-pressed'),'true');
+   assert.equal(await stationPin.getAttribute('aria-pressed'),'true');
+   assert.equal(await stationPin.evaluate(node=>getComputedStyle(node).backgroundColor),'rgb(161, 72, 21)');
+   assert.equal(await stationPin.evaluate(node=>document.activeElement===node),true);
+   assert.equal(await page.evaluate(()=>window.__markerCreates),markerCreates);
    assert.equal(await page.evaluate(()=>window.__mapCreates),1);
    await picker.getByRole('button',{name:'위치 지우기'}).click();
    assert.equal(await page.evaluate(()=>window.__mapDestroys),1);
@@ -60,7 +75,7 @@ window.naver={maps:{
    assert.equal(await page.locator('script[src*="oapi.map.naver.com"]').count(),0);
    assert.equal(await page.evaluate(()=>localStorage.length+sessionStorage.length),0);
    assert.equal(sdkCalls,1);assert.equal(apiCalls,0);assert.equal(unexpected,0);
-   console.log(`Map SDK stand-in ${width}px: no request before consent/after decline, identical list and markers, bidirectional selection, cleanup passed`);
+   console.log(`Map SDK stand-in ${width}px: no request before consent/after decline, identical list and markers, bidirectional pointer/keyboard selection, stable focus/markers, cleanup passed`);
    await page.close();
   }
   const failedPage=await browser.newPage();let failedCalls=0;

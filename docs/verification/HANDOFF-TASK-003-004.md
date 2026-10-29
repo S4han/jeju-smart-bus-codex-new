@@ -4,6 +4,8 @@
 
 ## 현재 상태와 다음 작업
 
+최신 마커 보완: 44px 버튼·정류장명/ID 접근 가능한 이름·aria-pressed·Enter/Space 선택과 이름 라벨을 구현했다. 선택만으로 마커를 재생성하지 않아 키보드 포커스를 유지한다. 실제 helper DOM/모의 지도 검증 통과. 참고/구현 기록 마지막 절을 따른다. 실제 외부 요청 추가 없음.
+
 최신 소스 참고 구현: 사용자 지시에 따라 기존 jeju-smart-bus의 로더 환경 주입과 화면 밖 선택 정류장 panTo 패턴을 새 앱에 맞춰 적용했다. Vitest 149개 + Node guard 3개·빌드·모의 브라우저 통과. [참고/구현 기록](TASK-004-MAP-REFERENCE.md)을 먼저 읽는다. 실제 외부 요청 증가 없음.
 
 최신 연결 진단: SDK/타일 경로와 별도로 nrbe 루트 GET 1회에서도 Envoy의 upstream remote connection failure와 HTTP 503을 확인했다. 브라우저 CSP 외부에서 재현됐으나 발생 계층은 미확정이다. [연결 진단](TASK-004-MAP-NETWORK-DIAGNOSIS.md)과 JSON을 참조한다. SDK 진입 누적 3회·BIS 19/19는 그대로이며 루트 진단은 별도 1회다.

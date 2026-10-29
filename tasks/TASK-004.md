@@ -1,6 +1,8 @@
 # TASK-004 — 현재·수동 위치와 정류장·도착정보
 
-최신 소스 참고 구현: SDK 로더 환경 분리 및 화면 밖 선택 정류장으로 지도 이동 구현. Vitest 149개 + Node guard 3개·빌드·모의 브라우저 통과. [참고 기록](../docs/verification/TASK-004-MAP-REFERENCE.md). 실제 지도 성공 미확인·예산 유지.
+최신 지도 마커: 정류장 이름/선택 라벨·44px 접근 가능한 버튼·Enter/Space 선택 및 포커스 보존 구현. 모의 지도/DOM 검증 통과, 실제 배치는 미확인.
+
+소스 참고 구현: SDK 로더 환경 분리 및 화면 밖 선택 정류장으로 지도 이동 구현. Vitest 149개 + Node guard 3개·빌드·모의 브라우저 통과. [참고 기록](../docs/verification/TASK-004-MAP-REFERENCE.md). 실제 지도 성공 미확인·예산 유지.
 
 이전 지도 후속(2026-10-29): CSP 보완, 타일 로딩 대기/20초 실패 처리 및 페이지 내 재시도 차단 구현. Vitest 139개 + Node guard 3개, 타입/빌드/모의 브라우저 검증 통과. 실제 SDK/정적 자산 200이나 nrbe 503으로 타일 표시 실패. SDK 진입 누적 3회·BIS 19/19 유지. [최신 후속 기록](../docs/verification/TASK-004-MAP-FOLLOWUP.md)을 따른다.
 

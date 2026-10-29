@@ -30,7 +30,7 @@ export function NearbyPanel({ point, kind, selectedStationId = null, onStationSe
           {station.name} · ID {station.id} · 직선거리 약 {Math.round(station.distanceMeters)}m
         </button>
       </li>)}</ul>
-      {selectedId && <p role="status">정류장 ID {selectedId} 선택됨. 실제 도착 조회와 지도 연결은 아직 제공하지 않습니다.</p>}
+      {selectedId && <p role="status">정류장 ID {selectedId} 선택됨. 아래 도착정보 조회 버튼으로 확인할 수 있습니다. 지도 연결은 준비 중입니다.</p>}
     </>}
   </section>;
 }

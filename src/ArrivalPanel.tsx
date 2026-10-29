@@ -78,7 +78,7 @@ export function ArrivalPanel({ selectedStationId, selectedStationName = null, sn
   return <section className="arrival-panel" aria-labelledby="arrival-title" aria-busy={loading}>
     <h2 id="arrival-title">정류장 도착정보</h2>
     {selectedStationId !== null && <p>선택 정류장: {selectedStationName ? `${selectedStationName} · ` : ''}ID {selectedStationId}</p>}
-    {selectedStationId === null ? <p role="status">정류장 조회를 준비 중입니다. 아직 선택된 정류장이 없습니다.</p> :
+    {selectedStationId === null ? <p role="status">아직 선택된 정류장이 없습니다. 주변 목록에서 정류장을 선택해 주세요.</p> :
       loading ? <p role="status">선택한 정류장의 도착정보를 확인하고 있습니다.</p> :
         board ? <ArrivalContent board={board} /> : <p role="status">선택한 정류장의 도착정보가 확인되지 않았습니다.</p>}
     <p className="privacy-note">검증된 산출시각으로부터 60초 이내인 정보만 표시합니다. 검증된 대체 시간표가 없어 시간표 기반 추정은 제공하지 않습니다.</p>

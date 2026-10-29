@@ -4,6 +4,8 @@
 새 독립 저장소: S4han/jeju-smart-bus-codex-new.
 현재 상태(2026-10-28): TASK-003 개발 기반 통과. TASK-004는 외부 전송 없는 현재 위치·출발지/목적지 수동 좌표 지정 및 도착 표시 계층 부분 구현 및 120개 테스트/빌드/Chromium 검증 통과. 정류장·지도·도착/장소 검색은 관련 게이트 보류. 상세 최신 판정은 [TASK-004 검증](docs/verification/TASK-004.md)을 따른다. 아래 초기 조사 기록과 현재 상태를 구분한다.
 
+최신 상태(2026-10-29): 사용자 지시에 따라 공식 좌표계 증빙을 기다리지 않고 잠정 좌표 기반 로컬 검색을 구현했다. 정류장명 검색·선택, 500m 및 0건 동의 후 1km 확대, 실제 도착 조회 버튼/로컬 API 연결 및 실제 예측 3개 표시 검증 완료. 137개 Vitest·3개 Python 테스트·빌드·Chromium 통과. 추가 호출 후 누적 19/19 소진. 지도/일반 장소 검색/시간표는 미완료. [최신 연결 기록](docs/verification/TASK-004-LOCAL-API.md)을 따른다.
+
 ## 1. 조사 기준과 보존
 원본 PRD blob SHA: b3419c7c0baa7a6124ac59e86c46d123affba4d3
 원본: https://github.com/S4han/jeju-smart-bus/blob/main/docs/제주_스마트_버스_PRD_v1.0.md

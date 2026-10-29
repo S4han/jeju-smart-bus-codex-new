@@ -14,7 +14,8 @@
     "preview": "vite preview --host 0.0.0.0",
     "api": "python server/local_api.py",
     "build:preview": "npm run build",
-    "build:review": "npm run build && node scripts/prepare-vercel-review.mjs"
+    "build:review": "npm run build && node scripts/prepare-vercel-review.mjs",
+    "build:vercel": "npm run build && node scripts/prepare-vercel-map.mjs"
   },
   "dependencies": {
     "react": "^19.3.1",

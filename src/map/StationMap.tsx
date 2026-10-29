@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { mapOriginAllowed } from '../browser/deployment';
 import { createLocationPin, createStationPin, updateStationPin } from './markerContent';
 import { offsetToReveal } from './viewport';
 import type { LocalPoint } from '../domain/location';
@@ -121,7 +122,7 @@ export function StationMap({ point, kind, stations, selectedId, onSelect }: {
   const [declined, setDeclined] = useState(false);
   useEffect(() => { setConsent(null); setDeclined(false); }, [point]);
   const staticPreview = document.documentElement.dataset.staticPreview === 'true';
-  const available = !staticPreview && location.hostname === 'localhost' && hasMapClientId();
+  const available = !staticPreview && mapOriginAllowed(location.origin) && hasMapClientId();
   return <div className="map-panel">
     <h3>정류장 지도</h3>
     {!available ? <p className="privacy-note">{staticPreview ? '화면 미리보기에서는 외부 지도를 불러오지 않습니다. 정류장 목록을 이용해 주세요.' : '이 실행 환경에서는 지도를 제공하지 않습니다. 정류장 목록을 이용해 주세요.'}</p> : consent === point ? <>

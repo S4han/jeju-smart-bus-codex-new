@@ -43,6 +43,8 @@ Node 24에서 `npm ci`, `npm run dev`, `npm test`, `npm run build`, `npm run pre
 출발지와 별도로 목적지 좌표도 수동 지정할 수 있다. 편집/삭제/화면 이탈 시 선택을 해제하고 상위 화면에서 두 지점의 선택 상태를 안내한다. 목적지용 GPS·외부 장소 검색은 호출하지 않는다. 두 위치를 지정해도 실제 경로 조회는 아직 제공하지 않는다.
 
 
-## Vercel 확인용 배포
+## Vercel에서 확인
 
-새 프로젝트 배포 설정을 준비했습니다. 개발 브랜치는 `feat/task-003-development-foundation`이며 확인용 코드는 `main`에도 반영합니다. 빌드는 `npm run build:review`, 출력은 `review-dist`입니다. 환경변수는 넣지 않습니다. 이 배포는 검색·선택 UI 확인용이며 실제 지도/API는 비활성입니다. [새 프로젝트 생성 및 검증 범위](docs/verification/VERCEL-REVIEW.md)를 확인하세요. 사용자가 만든 새 프로젝트 주소는 https://jeju-smart-bus-codex-new.vercel.app 입니다. `main` push 후 Vercel Git 자동 배포 결과를 확인해야 합니다.
+앞으로 새 프로젝트 https://jeju-smart-bus-codex-new.vercel.app 에서 확인합니다. `main` push가 Git 자동 배포를 시작합니다. 빌드는 `npm run build:vercel`, 출력은 `review-dist`입니다. 지도는 해당 고정 도메인에서만 사용자 동의 후 로드하며 BIS 조회는 예산 19/19 소진으로 차단합니다. [공개 지도 ID/도메인 설정 및 검증 범위](docs/verification/VERCEL-MAP-REVIEW.md)를 확인하세요. 기존 두 프로젝트는 변경하지 않습니다.
+
+ID 없는 오프라인 미리보기는 `npm run build:review`로 계속 만들 수 있습니다.

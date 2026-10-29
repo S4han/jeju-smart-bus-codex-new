@@ -14,7 +14,7 @@ export interface NaverMaps {
   Point: new (x: number, y: number) => MapOffset;
   LatLng: new (latitude: number, longitude: number) => object;
   Map: new (element: HTMLElement, options: { center: object; zoom: number }) => MapInstance;
-  Marker: new (options: { map: MapInstance; position: object; title: string; icon: { content: HTMLElement; anchor: MapOffset } }) => MarkerInstance;
+  Marker: new (options: { map: MapInstance; position: object; title: string; icon: { content: HTMLElement; anchor: MapOffset }; zIndex?: number }) => MarkerInstance;
   Event: { addListener(target: MarkerInstance, name: 'click', callback: () => void): object; addListener(target: MapInstance, name: 'tilesloaded', callback: () => void): object; removeListener(listener: object): void };
 }
 declare global {

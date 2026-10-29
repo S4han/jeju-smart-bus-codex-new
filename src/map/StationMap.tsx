@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { createStationPin, updateStationPin } from './markerContent';
+import { createLocationPin, createStationPin, updateStationPin } from './markerContent';
 import { offsetToReveal } from './viewport';
 import type { LocalPoint } from '../domain/location';
 import type { NearbyResult } from '../domain/nearby';
 import { hasMapClientId, loadNaverMaps, markMapUnavailable, type MapInstance, type NaverMaps } from './naver';
 
-function Canvas({ point, stations, selectedId, onSelect }: {
-  point: LocalPoint; stations: readonly NearbyResult[]; selectedId: string | null;
+function Canvas({ point, kind, stations, selectedId, onSelect }: {
+  kind: 'origin' | 'destination'; point: LocalPoint; stations: readonly NearbyResult[]; selectedId: string | null;
   onSelect: (station: NearbyResult) => void;
 }) {
   const element = useRef<HTMLDivElement>(null);
@@ -48,6 +48,14 @@ function Canvas({ point, stations, selectedId, onSelect }: {
   }, [point]);
   useEffect(() => {
     if (!ready) return;
+    const marker = new ready.maps.Marker({ map: ready.map,
+      position: new ready.maps.LatLng(point.latitude, point.longitude),
+      title: kind === 'origin' ? '출발 위치' : '목적 위치',
+      icon: { content: createLocationPin(kind), anchor: new ready.maps.Point(8, 8) }, zIndex: 1 });
+    return () => marker.setMap(null);
+  }, [ready, point, kind]);
+  useEffect(() => {
+    if (!ready) return;
     const markers = stations.map(station => {
       const element = createStationPin(station.id, station.name);
       updateStationPin(element, station.id === selected.current);
@@ -59,7 +67,7 @@ function Canvas({ point, stations, selectedId, onSelect }: {
       element.addEventListener('keydown', keydown);
       const marker = new ready.maps.Marker({ map: ready.map,
         position: new ready.maps.LatLng(station.latitude, station.longitude),
-        title: station.name, icon: { content: element, anchor: new ready.maps.Point(22, 22) } });
+        title: station.name, icon: { content: element, anchor: new ready.maps.Point(22, 22) }, zIndex: 10 });
       const listener = ready.maps.Event.addListener(marker, 'click', choose);
       return { id: station.id, element, keydown, marker, listener };
     });
@@ -100,13 +108,13 @@ function Canvas({ point, stations, selectedId, onSelect }: {
   return <>
     {failed && <p role="status">지도를 확인하지 못했습니다. 등록 주소·연결·이용 한도를 확인해 주세요. 정류장 목록은 계속 이용할 수 있습니다.</p>}
     {!failed && !tilesReady && <p role="status">지도를 불러오는 중입니다.</p>}
-    <div ref={element} className="station-map" aria-label="주변 정류장 NAVER 지도" />
-    <p className="privacy-note">지도에는 현재 목록과 같은 정류장만 표시합니다. 지도 확대·이동은 검색 반경이나 목록을 바꾸지 않습니다.</p>
+    <div ref={element} className="station-map" role="region" aria-label={`${kind === 'origin' ? '출발지' : '목적지'} 주변 정류장 NAVER 지도`} />
+    <p className="privacy-note">지도에는 선택한 {kind === 'origin' ? '출발 위치' : '목적 위치'}와 현재 목록과 같은 정류장을 표시합니다. 지도 확대·이동은 검색 반경이나 목록을 바꾸지 않습니다.</p>
   </>;
 }
 
-export function StationMap({ point, stations, selectedId, onSelect }: {
-  point: LocalPoint; stations: readonly NearbyResult[]; selectedId: string | null;
+export function StationMap({ point, kind, stations, selectedId, onSelect }: {
+  kind: 'origin' | 'destination'; point: LocalPoint; stations: readonly NearbyResult[]; selectedId: string | null;
   onSelect: (station: NearbyResult) => void;
 }) {
   const [consent, setConsent] = useState<LocalPoint | null>(null);
@@ -117,7 +125,7 @@ export function StationMap({ point, stations, selectedId, onSelect }: {
   return <div className="map-panel">
     <h3>정류장 지도</h3>
     {!available ? <p className="privacy-note">{staticPreview ? '화면 미리보기에서는 외부 지도를 불러오지 않습니다. 정류장 목록을 이용해 주세요.' : '이 실행 환경에서는 지도를 제공하지 않습니다. 정류장 목록을 이용해 주세요.'}</p> : consent === point ? <>
-      <Canvas point={point} stations={stations} selectedId={selectedId} onSelect={onSelect} />
+      <Canvas point={point} kind={kind} stations={stations} selectedId={selectedId} onSelect={onSelect} />
       <button type="button" onClick={() => location.reload()}>지도 동의 철회 및 위치 지우기</button>
       <p className="privacy-note">철회하면 화면을 새로 열어 지도와 위치 선택을 지웁니다.</p>
     </> : <>

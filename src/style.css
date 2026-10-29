@@ -92,3 +92,9 @@ footer span {color:#6c7b66}
 .arrival-actions {display:flex;gap:10px;align-items:stretch}
 .arrival-actions>button {flex:1}
 .arrival-actions .cancel {flex:0 0 auto;width:auto;min-width:90px;background:transparent;border-color:#b6c9ae}
+
+.map-location-pin {position:relative;display:block;width:16px;height:16px;pointer-events:none}
+.map-location-dot {display:block;width:16px;height:16px;border:3px solid #fff;border-radius:50%;background:#275f98;box-shadow:0 0 0 2px #275f98}
+.map-location-label {position:absolute;bottom:calc(100% + 20px);left:50%;transform:translateX(-50%);white-space:nowrap;border-radius:5px;padding:4px 7px;background:#275f98;color:#fff;font-size:12px;font-weight:700}
+.map-location-destination .map-location-dot {border-radius:2px;background:#843879;box-shadow:0 0 0 2px #843879}
+.map-location-destination .map-location-label {background:#843879}

@@ -27,7 +27,7 @@ export function NearbyPanel({ point, kind, selectedStationId = null, onStationSe
       {results.length === 0 && <p>해당 반경에서 정류장을 찾지 못했습니다.</p>}
       {base.length === 0 && !expanded && <button type="button" onClick={() => setConsent(point)}>이 {label}에서 1km까지 확대</button>}
       {expanded && <button type="button" onClick={() => { setConsent(null); onSelectionClear?.(); }}>500m로 돌아가기</button>}
-      <StationMap point={point} stations={results} selectedId={selectedId}
+      <StationMap point={point} kind={kind} stations={results} selectedId={selectedId}
         onSelect={station => onStationSelect?.(station, point)} />
       <ul aria-label={`${label} 주변 정류장 목록`}>{results.map(station => <li key={station.id}>
         <button type="button" aria-pressed={selectedId === station.id} onClick={() => onStationSelect?.(station, point)}>

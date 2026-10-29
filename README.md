@@ -45,6 +45,6 @@ Node 24에서 `npm ci`, `npm run dev`, `npm test`, `npm run build`, `npm run pre
 
 ## Vercel에서 확인
 
-앞으로 새 프로젝트 https://jeju-smart-bus-codex-new.vercel.app 에서 확인합니다. `main` push가 Git 자동 배포를 시작합니다. 빌드는 `npm run build:vercel`, 출력은 `review-dist`입니다. 지도는 해당 고정 도메인에서만 사용자 동의 후 로드하며 BIS 조회는 예산 19/19 소진으로 차단합니다. [공개 지도 ID/도메인 설정 및 검증 범위](docs/verification/VERCEL-MAP-REVIEW.md)를 확인하세요. 기존 두 프로젝트는 변경하지 않습니다.
+앞으로 새 프로젝트 https://jeju-smart-bus-codex-new.vercel.app 에서 확인합니다. `main` push가 Git 자동 배포를 시작합니다. 빌드는 `npm run build:vercel`, 출력은 `review-dist`입니다. 지도는 해당 고정 도메인에서만 사용자 동의 후 로드하며 BIS는 조회 서버가 미연결이라 비활성입니다. 사용자 승인 검증 예산은 누적 19/30회 사용·잔여 11회이며 방문자가 직접 소비하지 않습니다. [공개 지도 ID/도메인 설정 및 검증 범위](docs/verification/VERCEL-MAP-REVIEW.md)를 확인하세요. 기존 두 프로젝트는 변경하지 않습니다.
 
 ID 없는 오프라인 미리보기는 `npm run build:review`로 계속 만들 수 있습니다.

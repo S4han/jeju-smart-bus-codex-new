@@ -13,13 +13,13 @@ it('blocks BIS before fetch at the deployment origin even if the DOM flag is abs
   vi.stubGlobal('location', { origin: mapReviewOrigin });
   const fetch = vi.fn(); vi.stubGlobal('fetch', fetch);
   expect(hostedReview()).toBe(true);
-  expect((await requestArrivals('406000191', new AbortController().signal)).httpStatus).toBe(429);
+  expect((await requestArrivals('406000191', new AbortController().signal)).httpStatus).toBe(503);
   expect(fetch).not.toHaveBeenCalled();
 });
 it('blocks BIS on deployment previews with an arbitrary origin through the build flag', async () => {
   vi.stubGlobal('location', { origin: 'https://preview.example' });
   vi.stubGlobal('document', { documentElement: { dataset: { deploymentReview: 'true' } } });
   const fetch = vi.fn(); vi.stubGlobal('fetch', fetch);
-  expect((await requestArrivals('406000191', new AbortController().signal)).httpStatus).toBe(429);
+  expect((await requestArrivals('406000191', new AbortController().signal)).httpStatus).toBe(503);
   expect(fetch).not.toHaveBeenCalled();
 });

@@ -20,7 +20,8 @@ const sdk=require('./fixtures/naver-sdk.cjs');
    await picker.getByLabel('정류장명',{exact:true}).fill(stop.name);
    await picker.getByRole('list',{name:'출발지 정류장 검색 결과'}).getByRole('button',{name:stop.name+' · ID '+stop.id,exact:true}).click();
    assert.equal(sdkCalls,0);
-   assert.equal(await page.getByRole('button',{name:'조회 예산 소진으로 실시간 조회가 중단되었습니다',exact:true}).isDisabled(),true);
+   assert.equal(await page.getByRole('button',{name:'이 배포에서는 실시간 조회를 제공하지 않습니다',exact:true}).isDisabled(),true);
+   assert.equal(await page.getByText(/BIS 검증 예산은 누적 19\/30회/).count(),1);
    const panel=page.getByRole('region',{name:'출발지 주변 정류장',exact:true});
    const consent=panel.getByRole('button',{name:'동의하고 정류장 지도 보기',exact:true});
    if(origin==='https://jeju-smart-bus-codex-new.vercel.app'){

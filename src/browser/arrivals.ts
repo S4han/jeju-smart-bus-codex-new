@@ -7,7 +7,7 @@ export class ArrivalFormatError extends Error {
 
 /** Same-origin local API only. Never sends coordinates or a provider key. */
 export async function requestArrivals(stationId: string, signal: AbortSignal): Promise<ArrivalSnapshot> {
-  if (hostedReview()) return { stationId, httpStatus: 429, resultCode: null, rows: null, mapping: [] };
+  if (hostedReview()) return { stationId, httpStatus: 503, resultCode: null, rows: null, mapping: [] };
   const response = await fetch('/api/arrivals', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ stationId }), signal, cache: 'no-store', credentials: 'omit',

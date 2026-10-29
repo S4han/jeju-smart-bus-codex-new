@@ -40,3 +40,12 @@ app.html 메타와 새 프로젝트 Vercel Referrer-Policy를 origin으로 맞�
 verify-map-referrer.cjs는 실제 배포 출처와 Vercel 헤더를 모의 적용하고 SDK 및 후속 스크립트를 로컬 응답으로 가로챈다. 문서 주소에 합성 쿼리가 있어도 수정 후 entryHasOriginOnly=true, followupHasOriginOnly=true, forbiddenRequests=0, actualProviderRequests=0을 확인했다. 실제 식별자/원문 URL/좌표는 출력하지 않았다. npm test 152개 Vitest+3개 Node guard, build:vercel, 기존 배포 지도 모의 검증 통과.
 
 이 수정은 도메인 기반 인증에 필요한 origin 전달 누락을 보완하지만 사용자 화면의 실제 실패 원인이 이것 하나였다고 단정하지 않는다. NAVER 등록 도메인·Application/Client ID 대응·상품 활성 여부는 계정에서 확인해야 한다. 동일 새 프로젝트 main 자동 배포로 반영하고 실제 인증/타일 결과는 사용자 브라우저 확인을 따른다. 기존 두 저장소/기존 Vercel/메일 변경 없음.
+
+
+## 마커 표시·타일 미표시 화면 후 안전한 브라우저 진단 — 2026-10-29
+
+사용자 후속 화면에는 출발 위치/정류장 마커가 보이지만 배경 타일과 로딩 완료는 확인되지 않았다. 기존 인증 실패 문구가 해당 화면에 없다는 것만으로 전체 인증/지도 성공을 선언하지 않는다. origin referrer 보완 커밋 2e11b16의 Vercel status success는 GitHub에서 확인했다. 사용자 화면의 위치/정류장·좌표와 사용자 SDK 요청 횟수는 수집하지 않았다.
+
+Canvas 동의 후 메모리에서 securitypolicyviolation(지도 이미지/스크립트) 및 리소스 error 이벤트를 확인해 선택적 지도 연결 상태를 표시한다. 호스트·HTTP/HTTPS·차단/이미지실패/스크립트실패 종류·건수만 보존한다. 경로/쿼리/계정값/좌표/원문 오류·정책 문자열을 저장하지 않는다. 항목은 최대 8개, 건수는 999로 제한하고 서버 전송/영구 저장을 하지 않는다. 의도적으로 차단한 수집 connect-src 이벤트는 이 타일 진단에 넣지 않는다. 지도 실패 후에도 이미 수집된 요약은 화면에 남겨 iPad에서도 확인할 수 있다. unmount 때 이벤트를 해제하고 추가 요청·자동 재시도는 만들지 않는다.
+
+검증: Vitest 155개+Node guard 3개 통과. 신규 3개는 URL 자격증명/경로/쿼리/fragment 제거, 건수/항목 제한, 비HTTP/비URL 무시다. build:vercel 통과. verify-map-diagnostics.cjs는 실제 외부 연결 없이 합성 차단 이미지가 있는 SDK를 주입하고 CSP 차단 호스트가 타일 타임아웃 뒤에도 보이는지, 경로/쿼리가 없는지, 실패 지도는 제거되는지 확인했다. origin-only referrer 및 배포 지도 기존 모의 검증도 통과했다. 실제 SDK·타일·BIS 요청은 추가하지 않았으며 계정 설정이나 실제 타일 성공은 미확인이다. 기존 두 저장소/기존 Vercel/메일 변경 없음.

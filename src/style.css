@@ -98,3 +98,6 @@ footer span {color:#6c7b66}
 .map-location-label {position:absolute;bottom:calc(100% + 20px);left:50%;transform:translateX(-50%);white-space:nowrap;border-radius:5px;padding:4px 7px;background:#275f98;color:#fff;font-size:12px;font-weight:700}
 .map-location-destination .map-location-dot {border-radius:2px;background:#843879;box-shadow:0 0 0 2px #843879}
 .map-location-destination .map-location-label {background:#843879}
+
+.map-diagnostics {margin:10px 0;padding:10px;border:1px solid #dce5d7;border-radius:8px;background:#fff}
+.map-diagnostics li {font-size:12px;overflow-wrap:anywhere;line-height:1.8}

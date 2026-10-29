@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { recordMapIssue, type MapIssue } from './diagnostics';
 import { mapOriginAllowed } from '../browser/deployment';
 import { createLocationPin, createStationPin, updateStationPin } from './markerContent';
 import { offsetToReveal } from './viewport';
@@ -14,6 +15,7 @@ function Canvas({ point, kind, stations, selectedId, onSelect }: {
   const [ready, setReady] = useState<{ maps: NaverMaps; map: MapInstance } | null>(null);
   const [tilesReady, setTilesReady] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [issues, setIssues] = useState<MapIssue[]>([]);
   const pins = useRef<{ id: string; element: HTMLButtonElement }[]>([]);
   const selected = useRef(selectedId); selected.current = selectedId;
   const callback = useRef(onSelect); callback.current = onSelect;
@@ -26,6 +28,20 @@ function Canvas({ point, kind, stations, selectedId, onSelect }: {
       removeTileListener?.(); removeTileListener = undefined;
       map?.destroy(); map = null;
     };
+    const policyViolation = (event: SecurityPolicyViolationEvent) => {
+      if (!disposed && ['img-src', 'script-src', 'script-src-elem'].includes(event.effectiveDirective))
+        setIssues(previous => recordMapIssue(previous, event.blockedURI, '보안 정책 차단'));
+    };
+    const resourceError = (event: Event) => {
+      if (disposed) return;
+      const target = event.target;
+      if (target instanceof HTMLImageElement && element.current?.contains(target))
+        setIssues(previous => recordMapIssue(previous, target.currentSrc || target.src, '이미지 로드 실패'));
+      if (target instanceof HTMLScriptElement)
+        setIssues(previous => recordMapIssue(previous, target.src, '스크립트 로드 실패'));
+    };
+    document.addEventListener('securitypolicyviolation', policyViolation);
+    document.addEventListener('error', resourceError, true);
     const unavailable = () => { destroy(); setReady(null); setFailed(true); };
     window.addEventListener('pagehide', destroy);
     window.addEventListener('jeju-map-unavailable', unavailable);
@@ -43,6 +59,8 @@ function Canvas({ point, kind, stations, selectedId, onSelect }: {
       setReady({ maps, map });
     }).catch(() => { if (!disposed) { unavailable(); markMapUnavailable(); } });
     return () => {
+      document.removeEventListener('securitypolicyviolation', policyViolation);
+      document.removeEventListener('error', resourceError, true);
       window.removeEventListener('pagehide', destroy);
       window.removeEventListener('jeju-map-unavailable', unavailable); destroy();
     };
@@ -109,6 +127,13 @@ function Canvas({ point, kind, stations, selectedId, onSelect }: {
   return <>
     {failed && <p role="status">지도를 확인하지 못했습니다. 등록 주소·연결·이용 한도를 확인해 주세요. 정류장 목록은 계속 이용할 수 있습니다.</p>}
     {!failed && !tilesReady && <p role="status">지도를 불러오는 중입니다.</p>}
+    {(failed || issues.length > 0) && <details className="map-diagnostics" open>
+      <summary>지도 연결 상태</summary>
+      {issues.length ? <ul>{issues.map(issue => <li key={`${issue.scheme}-${issue.host}-${issue.kind}`}>
+        {issue.host} · {issue.scheme === 'https:' ? 'HTTPS' : 'HTTP'} · {issue.kind} {issue.count}건
+      </li>)}</ul> : <p>지도 자료의 로딩 완료를 확인하지 못했습니다. 추가 요청은 자동으로 보내지 않습니다.</p>}
+      <p className="privacy-note">연결 상태는 이 화면에서만 확인하며 서버로 보내거나 저장하지 않습니다.</p>
+    </details>}
     <div ref={element} className="station-map" role="region" aria-label={`${kind === 'origin' ? '출발지' : '목적지'} 주변 정류장 NAVER 지도`} />
     <p className="privacy-note">지도에는 선택한 {kind === 'origin' ? '출발 위치' : '목적 위치'}와 현재 목록과 같은 정류장을 표시합니다. 지도 확대·이동은 검색 반경이나 목록을 바꾸지 않습니다.</p>
   </>;

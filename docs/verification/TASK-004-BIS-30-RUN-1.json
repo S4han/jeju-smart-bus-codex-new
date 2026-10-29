@@ -1,0 +1,75 @@
+{
+  "startedAtUtc": "2026-10-29T07:31:12.102857+00:00",
+  "status": "received_without_retry",
+  "usedBefore": 19,
+  "ceiling": 30,
+  "maximumBatchRequests": 4,
+  "operations": [
+    {
+      "operation": "BusArrives",
+      "status": "received",
+      "rows": 42
+    },
+    {
+      "operation": "StationRoutePr",
+      "status": "received",
+      "rows": 111
+    },
+    {
+      "operation": "StationRoutePr",
+      "status": "received",
+      "rows": 82
+    },
+    {
+      "operation": "StationRoutePr",
+      "status": "received",
+      "rows": 87
+    }
+  ],
+  "snapshotSavedOutsideRepository": true,
+  "arrivalRows": 42,
+  "mappingRows": 277,
+  "receivedAtMs": 1793259076138,
+  "usedAfter": 23,
+  "remaining": 7,
+  "halted": false,
+  "finishedAtUtc": "2026-10-29T07:31:16.140747+00:00",
+  "validation": {
+    "checkedAtUtc": "2026-10-29T07:34:36.488Z",
+    "atReceipt": {
+      "status": "checked",
+      "validArrivalCount": 3,
+      "excluded": {
+        "stale": 0,
+        "unverified": 39,
+        "invalid": 0,
+        "mismatch": 0,
+        "duplicate": 0
+      }
+    },
+    "after61Seconds": {
+      "status": "checked",
+      "validArrivalCount": 0,
+      "excluded": {
+        "stale": 3,
+        "unverified": 39,
+        "invalid": 0,
+        "mismatch": 0,
+        "duplicate": 0
+      }
+    },
+    "atCheck": {
+      "status": "checked",
+      "validArrivalCount": 0,
+      "excluded": {
+        "stale": 3,
+        "unverified": 39,
+        "invalid": 0,
+        "mismatch": 0,
+        "duplicate": 0
+      }
+    },
+    "currentPredictionRendered": false,
+    "source": "current public BIS sample; no provider request during this check"
+  }
+}

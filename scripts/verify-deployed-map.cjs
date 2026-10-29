@@ -1,5 +1,6 @@
 const {chromium}=require('playwright');const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');
 const sdk=require('./fixtures/naver-sdk.cjs');
+const budget=JSON.parse(fs.readFileSync('src/data/bis-verification-budget.json','utf8'));
 (async()=>{
  const browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
  try{
@@ -21,7 +22,7 @@ const sdk=require('./fixtures/naver-sdk.cjs');
    await picker.getByRole('list',{name:'출발지 정류장 검색 결과'}).getByRole('button',{name:stop.name+' · ID '+stop.id,exact:true}).click();
    assert.equal(sdkCalls,0);
    assert.equal(await page.getByRole('button',{name:'이 배포에서는 실시간 조회를 제공하지 않습니다',exact:true}).isDisabled(),true);
-   assert.equal(await page.getByText(/BIS 검증 예산은 누적 19\/30회/).count(),1);
+   assert.equal(await page.getByText('BIS 검증 예산은 누적 '+budget.usedCheckpoint+'/'+budget.ceiling+'회 사용했습니다.',{exact:false}).count(),1);
    const panel=page.getByRole('region',{name:'출발지 주변 정류장',exact:true});
    const consent=panel.getByRole('button',{name:'동의하고 정류장 지도 보기',exact:true});
    if(origin==='https://jeju-smart-bus-codex-new.vercel.app'){

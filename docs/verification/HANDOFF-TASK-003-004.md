@@ -4,6 +4,8 @@
 
 ## 현재 상태와 다음 작업
 
+최신 배포 결과: 4ad6d11883b6015a2904a9a4953443e2c3909b16의 Vercel 상태 success를 확인했다. 배포: https://vercel.com/splendid3/jeju-smart-bus-codex-new/FrUaLngDamKxMKJHRRGDNgaShMXH . 이전 imported-handler 인식 실패는 명시적 handler 클래스 선언으로 수정했다. 운영 HTTP 응답 직접 검증은 환경의 Vercel 접근 제한으로 미실행이며 로컬 HTTP 검증과 구분한다. 다음 의존성은 새 프로젝트 전용 공유 영속 장부의 서비스/무료 조건/접속 설정이다. 현재 그런 저장소를 확인하지 못했으며 신규 서비스 생성·키 재사용·임시 SQLite 우회는 하지 않았다. 실제 사용 23/30, 잔여 7, 중단 플래그 0을 로컬 장부에서 재확인했다. 추가 BIS/SDK 실호출 없음.
+
 2026-10-29 사용자 제공 Build Logs에서 f304bf5 실패 원인을 확인했다: `[unused_function]` — functions의 api/arrivals.py 패턴에 해당하는 함수가 발견되지 않았다. 기존 진입점은 handler를 import만 했다. Vercel 공개 fs-detectors는 Python 파일의 findAppOrHandler 결과로 함수 인식 여부를 판단한다. api/arrivals.py 안에 BaseHTTPRequestHandler를 상속하는 handler 클래스를 직접 선언하고 검증된 서버 메서드에 위임하도록 수정했다. server 파일과 자료의 includeFiles를 복구하고 정적 /api rewrite를 제거했다. 공유 예산 저장소는 여전히 None이고 UI도 비활성이다. 실제 BIS/SDK 요청 없이 Python 16개 테스트와 build:vercel 통과. 누적 23/30·잔여 7회 보존. 배포 결과는 GitHub Vercel 상태로 별도 확인한다.
 
 공식 인식 경계 참고: https://github.com/vercel/vercel/blob/main/packages/fs-detectors/src/detect-builders.ts 및 https://github.com/vercel/vercel/blob/main/packages/fs-detectors/src/python.ts (2026-10-29 확인).

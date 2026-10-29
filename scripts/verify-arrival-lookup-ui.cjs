@@ -8,6 +8,7 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
    await page.route('**/api/arrivals',async route=>{
     calls++;const request=route.request();bodies.push(request.postDataJSON());
     const stationId=request.postDataJSON().stationId;
+    if(mode==='format')return route.fulfill({status:200,contentType:'application/json',body:'{broken'});
     if(mode==='quota')return route.fulfill({status:429,contentType:'application/json',body:'{"error":"verification_budget"}'});
     const body={stationId,httpStatus:200,resultCode:'00',rows:[{routeId:'405000001',arrvVhId:'123',stationOrd:'24',updnDir:'0',predictTravTm:'8',leftStation:'4',calcDate:new Date().toISOString()}],mapping:[{routeId:'405000001',stationId,order:24,direction:'0'}]};
     return route.fulfill({status:200,contentType:'application/json',headers:{'Cache-Control':'no-store'},body:JSON.stringify(body)});
@@ -23,16 +24,27 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
    assert.equal(await picker.getByRole('status').evaluate(el=>el===document.activeElement),true);
    assert.equal(calls,0);
    const panel=page.getByRole('region',{name:'정류장 도착정보',exact:true});
+   const beforeUrl=page.url();
+   if(width===390) {
+    await page.keyboard.press('Tab');
+    assert.equal(await page.evaluate(()=>document.activeElement.textContent),'도착정보 영역으로 이동');
+    await page.keyboard.press('Enter');
+   } else await picker.getByRole('button',{name:'도착정보 영역으로 이동',exact:true}).click();
+   assert.equal(await page.evaluate(()=>document.activeElement.id),'arrival-area');
+   assert.equal(page.url(),beforeUrl);assert.equal(calls,0);
    await page.getByRole('button',{name:'선택 정류장 도착정보 조회',exact:true}).click();
    await panel.getByText('산출 당시 예측 8분',{exact:true}).waitFor();
+   mode='format';await page.getByRole('button',{name:'선택 정류장 도착정보 조회',exact:true}).click();
+   await panel.getByText('받은 도착정보의 형식을 확인할 수 없습니다.',{exact:true}).waitFor();
+   assert.equal(await panel.getByRole('list').count(),0);
    mode='quota';await page.getByRole('button',{name:'선택 정류장 도착정보 조회',exact:true}).click();
    await panel.getByText('조회 한도에 도달해 도착정보를 확인할 수 없습니다.',{exact:true}).waitFor();
    assert.equal(await panel.getByRole('list').count(),0);
-   assert.deepEqual(bodies,[{stationId:stop.id},{stationId:stop.id}]);
+   assert.deepEqual(bodies,[{stationId:stop.id},{stationId:stop.id},{stationId:stop.id}]);
    await picker.getByRole('button',{name:'위치 지우기'}).click();
    assert.equal(await page.getByRole('button',{name:'선택 정류장 도착정보 조회',exact:true}).count(),0);
    assert.equal(await panel.getByText(/선택 정류장:/).count(),0);
-   console.log(`Arrival lookup ${width}px: explicit request, source display, quota clears prior data, selection reset passed`);
+   console.log(`Arrival lookup ${width}px: keyboard navigation, explicit request, format/quota clear prior data, selection reset passed`);
    await page.close();
   }
  } finally {await browser.close();}

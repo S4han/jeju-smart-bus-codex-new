@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrivalPanel, type ArrivalSnapshot } from './ArrivalPanel';
-import { requestArrivals } from './browser/arrivals';
+import { ArrivalFormatError, requestArrivals } from './browser/arrivals';
 
 export function ArrivalLookup({ stationId, stationName }: { stationId: string | null; stationName: string | null }) {
   const staticPreview = typeof document !== 'undefined' && document.documentElement.dataset.staticPreview === 'true';
@@ -20,19 +20,20 @@ export function ArrivalLookup({ stationId, stationName }: { stationId: string | 
     try {
       const snapshot = await requestArrivals(stationId, request.signal);
       if (!request.signal.aborted && controller.current === request) setResult(snapshot);
-    } catch {
-      if (controller.current === request) setResult({ stationId, httpStatus: 503, resultCode: null, rows: null, mapping: [] });
+    } catch (error) {
+      if (controller.current === request) setResult({ stationId,
+        httpStatus: error instanceof ArrivalFormatError ? 200 : 503, resultCode: null, rows: null, mapping: [] });
     } finally {
       window.clearTimeout(timer);
       if (controller.current === request) { controller.current = null; setPending(false); }
     }
   };
-  return <>
+  return <section id="arrival-area" aria-label="선택 정류장 도착 조회" tabIndex={-1}>
     {stationId && <div className="arrival-panel">
       <button type="button" disabled={pending || staticPreview} onClick={load}>{staticPreview ? '화면 미리보기에서는 실시간 조회를 제공하지 않습니다' : pending ? '도착정보 조회 중…' : '선택 정류장 도착정보 조회'}</button>
       <p className="privacy-note">{staticPreview ? '정류장 검색과 주변 목록을 확인할 수 있습니다. 실제 도착정보는 앱 실행 환경에서 조회할 수 있습니다.' : '버튼을 누르면 공개 정류장 ID만 앱 서버에 전달합니다. 좌표는 전송하지 않습니다. 자동 갱신 없이 승인된 검증 예산 안에서 조회합니다.'}</p>
     </div>}
     <ArrivalPanel selectedStationId={stationId} selectedStationName={stationName}
       snapshot={result?.stationId === stationId ? result : null} loading={pending && controller.current !== null} />
-  </>;
+  </section>;
 }

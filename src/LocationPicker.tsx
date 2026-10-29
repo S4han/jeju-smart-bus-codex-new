@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { LocalLocation, type LocalPoint, type LocationFailure } from './domain/location';
 import { requestDevicePosition } from './browser/position';
 import stations from './data/stations.json';
+import { focusArrivals } from './browser/navigation';
 
 const messages: Record<LocationFailure, string> = {
   denied: '위치 권한이 허용되지 않았습니다. 좌표로 출발지를 지정할 수 있습니다.',
@@ -81,6 +82,7 @@ export function LocationPicker({ kind = 'origin', model, onStationSelect }: {
         {state.status === 'error' && messages[state.reason]}
         {state.status === 'selected' && <><strong>{selectedName || (state.source === 'device' ? '현재 위치' : '입력한 좌표')}를 {label}로 선택했습니다.</strong><span>아래에서 주변 정류장을 확인할 수 있습니다. 경로 조회는 준비 중입니다.</span></>}
       </div>
+      {state.status === 'selected' && selectedName && <button type="button" className="secondary" onClick={focusArrivals}>도착정보 영역으로 이동</button>}
       <button type="button" className="text-button" onClick={reset}>{origin ? '위치 지우기' : '목적지 지우기'}</button>
     </section>
   );

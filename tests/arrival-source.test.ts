@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { requestArrivals } from '../src/browser/arrivals';
+import { ArrivalFormatError, requestArrivals } from '../src/browser/arrivals';
 afterEach(()=>vi.unstubAllGlobals());
 const snapshot={stationId:'406000191',httpStatus:200,resultCode:'00',rows:[],mapping:[]};
 it('sends only the selected public ID in a same-origin no-store POST',async()=>{
@@ -16,4 +16,15 @@ it.each([429,502])('preserves HTTP failure %s without decoding untrusted provide
 it.each([{...snapshot,stationId:'406000192'},{...snapshot,rows:[null]},{...snapshot,mapping:[{routeId:'bad'}]}])('rejects mismatched or malformed snapshots',async data=>{
  vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,status:200,json:async()=>data}));
  await expect(requestArrivals('406000191',new AbortController().signal)).rejects.toThrow('format');
+});
+
+it('classifies invalid JSON as a format failure without exposing the response text',async()=>{
+ vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,status:200,json:async()=>{throw new SyntaxError('untrusted response text');}}));
+ await expect(requestArrivals('406000191',new AbortController().signal)).rejects.toBeInstanceOf(ArrivalFormatError);
+ await expect(requestArrivals('406000191',new AbortController().signal)).rejects.toThrow('format');
+});
+it('keeps an interrupted response as a transport failure',async()=>{
+ const failure=new TypeError('body stream interrupted');
+ vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,status:200,json:async()=>{throw failure;}}));
+ await expect(requestArrivals('406000191',new AbortController().signal)).rejects.toBe(failure);
 });

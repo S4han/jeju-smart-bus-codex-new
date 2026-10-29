@@ -3,6 +3,7 @@ import type { LocalPoint } from './domain/location';
 import { nearbyStations } from './domain/nearby';
 import stations from './data/stations.json';
 import { StationMap } from './map/StationMap';
+import { focusArrivals } from './browser/navigation';
 
 export function NearbyPanel({ point, kind, selectedStationId = null, onStationSelect, onSelectionClear }: {
   point: LocalPoint | null;
@@ -33,7 +34,10 @@ export function NearbyPanel({ point, kind, selectedStationId = null, onStationSe
           {station.name} · ID {station.id} · 직선거리 약 {Math.round(station.distanceMeters)}m
         </button>
       </li>)}</ul>
-      {selectedId && <p role="status">정류장 ID {selectedId} 선택됨. 아래 도착정보 조회 버튼으로 확인할 수 있습니다.</p>}
+      {selectedId && <>
+        <p role="status">정류장 ID {selectedId} 선택됨. 아래 도착정보 조회 버튼으로 확인할 수 있습니다.</p>
+        <button type="button" onClick={focusArrivals}>선택 정류장 도착정보로 이동</button>
+      </>}
     </>}
   </section>;
 }

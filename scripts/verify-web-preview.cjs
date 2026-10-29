@@ -24,6 +24,10 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
    await picker.getByLabel('정류장명',{exact:true}).fill(station.name);
    await picker.getByRole('list',{name:'출발지 정류장 검색 결과'}).getByRole('button',{name:`${station.name} · ID ${station.id}`,exact:true}).click();
    await surface.getByRole('region',{name:'출발지 주변 정류장',exact:true}).getByRole('button').filter({hasText:'ID 406000191'}).click();
+   const beforeNavigation=surface.url();
+   await picker.getByRole('button',{name:'도착정보 영역으로 이동',exact:true}).click();
+   assert.equal(await surface.evaluate(()=>document.activeElement.id),'arrival-area');
+   assert.equal(surface.url(),beforeNavigation);
    assert.equal(await surface.getByRole('button',{name:'화면 미리보기에서는 실시간 조회를 제공하지 않습니다',exact:true}).isDisabled(),true);
    assert.equal(await surface.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
    assert.deepEqual(errors,[]);assert.deepEqual(network,[]);

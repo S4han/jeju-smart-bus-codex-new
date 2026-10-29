@@ -19,7 +19,7 @@ for (const file of [...await files('src'), ...await files('dist')]) {
   for (const [label,pattern] of rules) if (pattern.test(source)) throw new Error(`${label} found in ${file}`);
 }
 // Match known runtime secrets without printing their values or the matched text.
-for (const name of ['JEJU_BUS_API_KEY', 'VITE_NAVER_MAP_CLIENT_ID']) {
+for (const name of ['JEJU_BUS_API_KEY']) {
   const value = process.env[name];
   if (!value || value.length < 8) continue;
   for (const file of await files('dist')) {

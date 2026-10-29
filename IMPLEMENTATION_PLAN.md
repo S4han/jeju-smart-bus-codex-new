@@ -6,6 +6,8 @@
 
 최신 상태(2026-10-29): 사용자 지시에 따라 공식 좌표계 증빙을 기다리지 않고 잠정 좌표 기반 로컬 검색을 구현했다. 정류장명 검색·선택, 500m 및 0건 동의 후 1km 확대, 실제 도착 조회 버튼/로컬 API 연결 및 실제 예측 3개 표시 검증 완료. 137개 Vitest·3개 Python 테스트·빌드·Chromium 통과. 추가 호출 후 누적 19/19 소진. 지도/일반 장소 검색/시간표는 미완료. [최신 연결 기록](docs/verification/TASK-004-LOCAL-API.md)을 따른다.
 
+지도 추가 갱신(2026-10-29): NAVER 지도 동의·목록과 동일 정류장 집합 및 양방향 선택 구현, 모의 SDK Chromium 검증 통과. 실제 SDK/타일/도메인 검증은 미완료이며 정적 미리보기에서는 지도 비활성 유지. 공개 ID 반영은 값 노출 없이 확인했다. [지도 검증](docs/verification/TASK-004-MAP.md) 참조.
+
 ## 1. 조사 기준과 보존
 원본 PRD blob SHA: b3419c7c0baa7a6124ac59e86c46d123affba4d3
 원본: https://github.com/S4han/jeju-smart-bus/blob/main/docs/제주_스마트_버스_PRD_v1.0.md

@@ -1,13 +1,17 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+import { build } from 'vite';
 
 // A standalone preview for HTML viewers that cannot transpile TSX or resolve Vite assets.
-const built = await readFile('dist/index.html', 'utf8');
+// Build separately with no map identifier; leave the runnable app's dist intact.
+await build({ define: { __NAVER_MAP_CLIENT_ID__: JSON.stringify('') },
+  build: { outDir: '.preview-build', emptyOutDir: true }, logLevel: 'error' });
+const built = await readFile('.preview-build/index.html', 'utf8');
 const scriptPath = built.match(/<script\b[^>]*\bsrc="([^"]+)"[^>]*><\/script>/)?.[1];
 const stylePath = built.match(/<link\b[^>]*\bhref="([^"]+\.css)"[^>]*>/)?.[1];
 if (!scriptPath?.startsWith('/assets/') || !stylePath?.startsWith('/assets/')) throw new Error('Unexpected build layout');
-const js = 'document.documentElement.dataset.staticPreview="true";\n' + (await readFile(`dist${scriptPath}`, 'utf8')).replace(/<\/script/gi, '<\\/script');
-const css = (await readFile(`dist${stylePath}`, 'utf8')).replace(/<\/style/gi, '<\\/style');
+const js = 'document.documentElement.dataset.staticPreview="true";\n' + (await readFile(`.preview-build${scriptPath}`, 'utf8')).replace(/<\/script/gi, '<\\/script');
+const css = (await readFile(`.preview-build${stylePath}`, 'utf8')).replace(/<\/style/gi, '<\\/style');
 const hash = value => `'sha256-${createHash('sha256').update(value).digest('base64')}'`;
 const csp = `default-src 'none'; script-src ${hash(js)}; style-src ${hash(css)}; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'`;
 const html = `<!doctype html>
@@ -17,4 +21,5 @@ for (const name of ['JEJU_BUS_API_KEY', 'VITE_NAVER_MAP_CLIENT_ID']) {
   if (value && value.length >= 8 && html.includes(value)) throw new Error('Configured value detected in preview');
 }
 await writeFile('web-preview.html', html);
+await rm('.preview-build', { recursive: true, force: true });
 console.log('Standalone web-preview.html generated; no external assets or live API enabled.');

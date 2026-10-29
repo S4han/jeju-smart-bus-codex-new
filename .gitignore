@@ -10,3 +10,4 @@ __pycache__/
 *.sqlite
 /web-preview.html
 /web-preview-screen.png
+/.preview-build/

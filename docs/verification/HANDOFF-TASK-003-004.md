@@ -1,6 +1,6 @@
 # TASK-004 최신 인계 — 2026-10-29 (Asia/Seoul)
 
-대상 S4han/jeju-smart-bus-codex-new, 기준 브랜치 feat/task-003-development-foundation (e10c73c). 로컬 작업 /workspace/work/task004. 아래 과거 인계의 ‘지도 요청 0회’, ‘호스트 미허용’, ‘실행 전’은 당시 기록이며 현재 상태가 아니다. 이번 변경은 지정 브랜치의 로컬 커밋으로 보존하며 원격 push는 하지 않았다. 새 환경에는 로컬 커밋이 자동 반영되지 않으므로 전환 전에 보존 여부를 확인한다.
+대상 S4han/jeju-smart-bus-codex-new, 기준 브랜치 feat/task-003-development-foundation (e10c73c). 로컬 작업 /workspace/work/task004. 아래 과거 인계의 ‘지도 요청 0회’, ‘호스트 미허용’, ‘실행 전’은 당시 기록이며 현재 상태가 아니다. 구현·실측 보존 커밋은 a442e33이다. 사용자 후속 계속 진행 지시에 따라 이 커밋과 최신 인계를 새 저장소의 지정 브랜치에 일반 push로 보존한다. 새 환경에서는 해당 브랜치를 fetch하고 a442e33 포함 여부를 확인한다. 원격 기록보다 오래된 초기 work 체크아웃을 최신 상태로 취급하지 않는다.
 
 ## 현재 상태와 다음 작업
 

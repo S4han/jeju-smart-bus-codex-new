@@ -4,12 +4,12 @@
 
 ## 현재 상태
 
-확인용 정적 배포 설정/산출물 검증 완료, 실제 Vercel 업로드 및 URL 발급은 미실행이다. 현재 실행 환경에는 Vercel 도구/CLI·인증 토큰·조직/프로젝트 연결이 없고 네트워크 정책에도 Vercel 호스트가 없다. GitHub push 가능 여부와 Vercel 배포 권한은 별개다. 키나 Vercel 토큰을 채팅으로 요청하지 않는다. 기존 프로젝트를 찾아 재사용/수정하지 않았다.
+확인용 정적 배포 설정/산출물 검증 완료. 사용자가 새 Vercel 프로젝트를 생성했고 jeju-smart-bus-codex-new.vercel.app 도메인과 main/472f217(문서 커밋) 배포를 화면으로 확인했다. 사용자의 직접 배포 요청에 따라 구현 브랜치를 main으로 일반 fast-forward push하여 Git 연동 자동 배포를 유도한다. Vercel 빌드/배포 완료는 별도 확인이 필요하다. 현재 실행 환경에는 Vercel 도구/CLI·인증 토큰·조직/프로젝트 연결이 없고 네트워크 정책에도 Vercel 호스트가 없다. GitHub push 가능 여부와 Vercel 배포 권한은 별개다. 키나 Vercel 토큰을 채팅으로 요청하지 않는다. 기존 프로젝트를 찾아 재사용/수정하지 않았다.
 
 ## 사용자가 새 프로젝트에서 수행할 단계
 
 1. https://vercel.com/new 에서 GitHub 저장소 S4han/jeju-smart-bus-codex-new를 새 프로젝트로 Import한다. 기존 jeju-smart-bus / jeju-smart-bus-codex는 선택하지 않는다. 새 프로젝트 이름 예: jeju-smart-bus-codex-review.
-2. 배포할 Git 브랜치는 feat/task-003-development-foundation이다. Import 화면에서 브랜치를 고를 수 없다면 새 프로젝트의 Settings → Git → Production Branch를 이 브랜치로 지정하고 해당 브랜치로 새 배포를 만든다. main의 초기 문서 상태를 배포하지 않는다. 개인 Hobby 계정을 사용할 수 있다면 그 범위를 사용하고 유료 플랜/추가 상품을 신청하지 않는다.
+2. 개발 브랜치는 feat/task-003-development-foundation이고, 사용자 직접 배포 요청 후 main에도 확인용 구현을 반영한다. 현재 프로젝트의 main 자동 배포를 사용할 수 있다. 개발 브랜치만 별도로 배포한다면 feat/task-003-development-foundation을 지정한다. Import 화면에서 브랜치를 고를 수 없다면 새 프로젝트의 Settings → Git → Production Branch를 이 브랜치로 지정하고 해당 브랜치로 새 배포를 만든다. main의 초기 문서 상태를 배포하지 않는다. 개인 Hobby 계정을 사용할 수 있다면 그 범위를 사용하고 유료 플랜/추가 상품을 신청하지 않는다.
 3. Root Directory는 저장소 루트다. vercel.json에서 Framework=null, Build Command=npm run build:review, Output Directory=review-dist, Install Command=npm ci를 지정했다. UI가 별도 override를 요구하면 이 값으로 맞춘다. 환경변수는 추가하지 않는다. Node는 package.json의 24.x를 따른다.
 4. 배포 완료 후 발급된 URL을 연다. 실제 URL/배포 성공은 Vercel 결과로 확인해야 하며 이 문서는 성공 증거가 아니다.
 
@@ -30,3 +30,8 @@ vercel.json은 no-store, no-referrer, nosniff 응답 헤더를 지정했다. CSP
 npm run build:review 통과. node scripts/verify-vercel-review.cjs는 산출물을 로컬 HTTP로 서빙하며 390/1280px에서 검색·양쪽 선택·실시간 조회 비활성·지도 동의 버튼 없음·외부/API 요청 0·페이지 오류 없음·가로 넘침 없음과 캐시/리퍼러 헤더를 확인했다. 이는 로컬 호스팅 모의 검증이며 Vercel 실배포 검증이 아니다. 앱 코드 변경이 없어 전체 단위 테스트를 반복하지 않았다. 기존 149개 Vitest+3개 Node guard 결과와 구분한다.
 
 이번 실제 SDK/BIS/호스트 루트 요청은 없으며 SDK 진입 누적 3회·BIS 19/19·별도 nrbe 루트 진단 1회를 유지한다. Vercel 청구/사용량/플랜별 제한은 실계정 미확인이고 실제 배포 비용 0원을 검증했다고 주장하지 않는다. 기존 두 저장소·기존 Vercel·메일 변경 없음.
+
+
+## main 자동 배포 경로
+
+Vercel 관리 도구/토큰 없이도 사용자가 생성한 새 프로젝트의 Git 연결을 활용할 수 있다. 원격 main/472f217이 구현 브랜치의 조상임을 확인했고 강제 push나 기존 변경 삭제 없이 일반 push로 main을 갱신한다. 기존 두 저장소 및 기존 Vercel 프로젝트는 변경하지 않는다. 사용자 화면의 새 프로젝트 도메인은 https://jeju-smart-bus-codex-new.vercel.app 이다. 이 주소의 실제 배포 완료/HTTP 200은 환경 네트워크 허용 전에는 확인했다고 주장하지 않는다.

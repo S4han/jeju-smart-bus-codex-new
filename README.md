@@ -45,4 +45,4 @@ Node 24에서 `npm ci`, `npm run dev`, `npm test`, `npm run build`, `npm run pre
 
 ## Vercel 확인용 배포
 
-새 프로젝트 배포 설정을 준비했습니다. 브랜치는 `feat/task-003-development-foundation`, 빌드는 `npm run build:review`, 출력은 `review-dist`입니다. 환경변수는 넣지 않습니다. 이 배포는 검색·선택 UI 확인용이며 실제 지도/API는 비활성입니다. [새 프로젝트 생성 및 검증 범위](docs/verification/VERCEL-REVIEW.md)를 확인하세요. 실제 접속 URL은 아직 발급되지 않았습니다.
+새 프로젝트 배포 설정을 준비했습니다. 개발 브랜치는 `feat/task-003-development-foundation`이며 확인용 코드는 `main`에도 반영합니다. 빌드는 `npm run build:review`, 출력은 `review-dist`입니다. 환경변수는 넣지 않습니다. 이 배포는 검색·선택 UI 확인용이며 실제 지도/API는 비활성입니다. [새 프로젝트 생성 및 검증 범위](docs/verification/VERCEL-REVIEW.md)를 확인하세요. 사용자가 만든 새 프로젝트 주소는 https://jeju-smart-bus-codex-new.vercel.app 입니다. `main` push 후 Vercel Git 자동 배포 결과를 확인해야 합니다.

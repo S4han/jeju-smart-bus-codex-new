@@ -4,7 +4,7 @@
 
 ## 현재 상태와 다음 작업
 
-최신 사용자 요청은 Vercel 확인용 배포다. 새 프로젝트 전용 vercel.json/build:review와 ID 없는 review-dist를 준비하고 로컬 390/1280px 검증을 통과했다. Vercel 인증/도구/호스트 허용이 없어 실제 배포·URL은 미발급이다. [Vercel 확인용 안내](VERCEL-REVIEW.md)를 따른다. 확인용 배포는 지도/BIS 비활성이고 전체 TASK-008 완료가 아니다.
+최신 사용자 요청은 Vercel 확인용 배포다. 새 프로젝트 전용 vercel.json/build:review와 ID 없는 review-dist를 준비하고 로컬 390/1280px 검증을 통과했다. 사용자가 새 Vercel 프로젝트와 jeju-smart-bus-codex-new.vercel.app을 생성했다. 스크린샷에서 문서 전용 main/472f217 배포가 404인 것을 확인했다. 직접 배포 요청에 따라 새 저장소 main에 구현을 일반 push하여 Git 자동 배포를 사용한다. 실제 배포 결과는 별도 확인해야 한다. [Vercel 확인용 안내](VERCEL-REVIEW.md)를 따른다. 확인용 배포는 지도/BIS 비활성이고 전체 TASK-008 완료가 아니다.
 
 최신 위치 표식: 출발/목적 위치를 정류장 마커와 구분해 각 지도에 표시하고 개별 동의/독립 정리를 유지한다. 390/1280px 두 지도 모의 검증과 기존 검증 통과. 실제 표식 배치는 미검증이며 추가 외부 요청 없음. 참고/구현 기록 마지막 절 참조.
 

@@ -21,6 +21,7 @@ const { existsSync } = require('node:fs');
       const response = await page.goto('http://127.0.0.1:4173/');
       const origin = page.getByRole('region', {name:'출발지 지정'});
       const destination = page.getByRole('region', {name:'목적지 지정'});
+      await origin.locator('summary').click(); await destination.locator('summary').click();
       assert.equal(response.status(),200); assert.equal(response.headers()['cache-control'],'no-store');
       assert.equal(await page.evaluate(() => window.__locationCalls),0);
       assert.equal(await page.getByRole('button',{name:'버스 경로 찾기'}).isDisabled(),true);

@@ -37,10 +37,10 @@ export function LocationPicker({ kind = 'origin', model }: { kind?: 'origin' | '
       {origin && <button type="button" className="primary" disabled={state.status === 'pending'} onClick={() => {
         setLatitude(''); setLongitude(''); setQuery(''); setSelectedName(''); location.request();
       }}>{state.status === 'pending' ? '현재 위치 확인 중…' : '현재 위치 사용'}</button>}
-      <fieldset>
+      <fieldset className="station-search">
         <legend>정류장명으로 지정</legend>
         <p className="privacy-note">2026-10-28 공공 정류장 목록에서 검색합니다. 일반 장소 검색은 제공하지 않습니다. 좌표계 미확인 자료를 잠정 사용합니다.</p>
-        <label htmlFor={`${kind}-station-query`}>정류장명<input id={`${kind}-station-query`} type="text" autoComplete="off" value={query} onChange={e => {
+        <label htmlFor={`${kind}-station-query`}>정류장명<input id={`${kind}-station-query`} type="search" placeholder="정류장 이름을 입력하세요" autoComplete="off" value={query} onChange={e => {
           location.clear(); setSelectedName(''); setLatitude(''); setLongitude(''); setQuery(e.target.value);
         }} /></label>
         {search && <>
@@ -54,7 +54,7 @@ export function LocationPicker({ kind = 'origin', model }: { kind?: 'origin' | '
         </>}
         {state.status === 'selected' && selectedName && <p>선택한 정류장: {selectedName}</p>}
       </fieldset>
-      <fieldset>
+      <details className="manual-entry"><summary>좌표로 직접 지정</summary><fieldset>
         <legend>좌표로 직접 지정</legend>
         <p className="privacy-note">알고 있는 위도·경도를 입력하고 {label}로 선택해 주세요.</p>
         <div className="coordinate-fields">
@@ -65,7 +65,7 @@ export function LocationPicker({ kind = 'origin', model }: { kind?: 'origin' | '
           location.selectManual(latitude, longitude);
           if (location.getSnapshot().status === 'selected') { setLatitude(''); setLongitude(''); }
         }}>이 좌표를 {label}로 선택</button>
-      </fieldset>
+      </fieldset></details>
       <div role="status" aria-live="polite" className="location-status">
         {state.status === 'idle' && `아직 ${label}를 선택하지 않았습니다.`}
         {state.status === 'pending' && '브라우저 위치 권한을 확인해 주세요. 기다리지 않고 좌표로 지정할 수도 있습니다.'}

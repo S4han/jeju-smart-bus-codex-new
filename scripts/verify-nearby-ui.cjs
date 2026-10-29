@@ -13,6 +13,7 @@ const {readFileSync} = require('node:fs');
    const origin=page.getByRole('region',{name:'출발지 주변 정류장',exact:true});
    const destination=page.getByRole('region',{name:'목적지 주변 정류장',exact:true});
    async function select(lat,lon) {
+    if(!await picker.locator('details').evaluate(el=>el.open)) await picker.locator('summary').click();
     await picker.getByLabel('위도',{exact:true}).fill(String(lat));
     await picker.getByLabel('경도',{exact:true}).fill(String(lon));
     await picker.getByRole('button',{name:'이 좌표를 출발지로 선택'}).click();

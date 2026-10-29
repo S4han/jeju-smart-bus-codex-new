@@ -9,7 +9,6 @@ scratch/
 docs/
 tasks/
 tests/
-server/
 .env
 .env.*
 *.sqlite

@@ -19,8 +19,9 @@ def reserve(database):
   if row is None or row[0]>=row[1] or row[2]: raise BudgetExhausted()
   db.execute('UPDATE budget SET used=used+1 WHERE id=1')
 
-def provider_rows(operation,identifier,database):
- reserve(database)
+def fetch_provider_rows(operation,identifier):
+ # Reservation belongs to the caller: local SQLite or a configured shared store.
+ if operation not in ('BusArrives','StationRoutePr') or not re.fullmatch(r'\d{9}',identifier): raise ProviderFailure()
  query=('station=' if operation=='BusArrives' else 'route=')+identifier
  try:
   opener=urllib.request.build_opener(NoRedirect)
@@ -30,7 +31,11 @@ def provider_rows(operation,identifier,database):
    root=ET.fromstring(raw)
    if root.findtext('.//resultCode')!='00': raise ProviderFailure()
    return [{child.tag:child.text for child in item} for item in root.findall('.//item')]
- except BudgetExhausted: raise
+ except Exception: raise ProviderFailure() from None
+
+def provider_rows(operation,identifier,database):
+ reserve(database)
+ try: return fetch_provider_rows(operation,identifier)
  except Exception:
   with sqlite3.connect(database) as db: db.execute('UPDATE budget SET halted=1 WHERE id=1')
   raise ProviderFailure() from None

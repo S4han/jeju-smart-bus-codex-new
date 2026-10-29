@@ -56,7 +56,7 @@ export function ArrivalLookup({ stationId, stationName }: { stationId: string | 
       </div>
       {cancelled && <p role="status">화면의 조회를 취소했습니다. 자동으로 다시 조회하지 않습니다.</p>}
       {(pending || cancelled) && <p className="privacy-note">취소해도 이미 시작된 서버 조회는 진행될 수 있습니다.</p>}
-      <p className="privacy-note">{staticPreview ? '정류장 검색과 주변 목록을 확인할 수 있습니다. 실제 도착정보는 앱 실행 환경에서 조회할 수 있습니다.' : publishedReview ? `BIS 검증 예산은 누적 ${bisBudget.usedCheckpoint}/${bisBudget.ceiling}회 사용했습니다. 남은 ${bisBudget.ceiling - bisBudget.usedCheckpoint}회는 서버 검증 예산이며, 이 배포에는 조회 서버가 연결되지 않았습니다.` : '버튼을 누르면 공개 정류장 ID만 앱 서버에 전달합니다. 좌표는 전송하지 않습니다. 자동 갱신 없이 승인된 검증 예산 안에서 조회합니다.'}</p>
+      <p className="privacy-note">{staticPreview ? '정류장 검색과 주변 목록을 확인할 수 있습니다. 실제 도착정보는 앱 실행 환경에서 조회할 수 있습니다.' : publishedReview ? `BIS 검증 예산은 누적 ${bisBudget.usedCheckpoint}/${bisBudget.ceiling}회 사용했습니다. 남은 ${bisBudget.ceiling - bisBudget.usedCheckpoint}회는 서버 검증 예산이며, 공유 예산 장부 연결 전까지 이 배포의 실제 조회는 비활성입니다.` : '버튼을 누르면 공개 정류장 ID만 앱 서버에 전달합니다. 좌표는 전송하지 않습니다. 자동 갱신 없이 승인된 검증 예산 안에서 조회합니다.'}</p>
     </div>}
     <ArrivalPanel selectedStationId={stationId} selectedStationName={stationName}
       snapshot={result?.stationId === stationId ? result : null} loading={pending && controller.current !== null} />

@@ -4,6 +4,14 @@
 대상 저장소: S4han/jeju-smart-bus-codex-new.
 보존 브랜치: feat/task-003-development-foundation.
 
+## 2026-10-29 환경 게시 후 실제 실행 환경 확인
+
+사용자가 NAVER SDK 호스트 추가 후 게시 완료를 알렸다. 그러나 이 실행 인스턴스의 상태 관측은 current/running, spec/observed revision 1이며 사용자 허용 호스트는 여전히 제주 3개뿐이다. 로컬 network-policy.json에서도 oapi.map.naver.com이 없다. 공개 지도 ID는 비어 있지 않음을 값 없이 확인했다. 게시 실패로 단정하거나 다시 게시/ID 재등록을 요구하지 않는다. 현재 세션에 최신 게시 환경이 붙지 않은 경우 최신 환경으로 새 실행이 필요하다. 도구에 환경 전환/재시작 기능은 없다.
+
+재개 시 이 브랜치 최신 코드를 읽고 환경/로컬 정책의 SDK 호스트 반영을 먼저 확인한다. 준비되면 실제 localhost 앱에서 공개 정류소로 `node scripts/verify-map-live.cjs --live`를 실행한다. 기본 사전 검사에서 차단된 현재 단계에서는 NAVER 요청/예약 파일을 만들지 않았다. 실제 시도 후에는 scratch의 예약/결과 파일 유무를 확인하고 반복하지 않는다. 공공 BIS는 누적 19, 새 환경에서 예산을 초기화하거나 서버 ledger를 새로 만들어 호출하지 않는다. 실제 지도 스크립트/타일 추가 호스트는 관측한 것만 검토한다. 기존 저장소/Vercel/메일 변경 금지는 계속 유지한다.
+
+코드 최신 기능은 조회 취소·늦은 응답 보호·도착 영역 이동·형식 오류 구분까지 포함한다. 최근 Vitest 139개·빌드·지연 응답/미리보기 브라우저 검증 통과. 원문 scratch가 새 환경에 없다면 있다고 가정하지 않는다. 새 실행에서도 Client ID 값을 출력/요청하지 않는다.
+
 ## 미리보기 기본 진입점 최신 수정
 
 내장 Index가 원본 HTML을 계속 보여주는 문제를 수정했다. 실행용 소스 HTML은 app.html, App은 src/App.tsx, main.tsx는 bootstrap이다. 루트 index.html은 동일 App 초기 화면을 서버 렌더링한 독립 미리보기이며 npm run build로 재생성한다. 직접 수정하지 않는다. build는 실행용 dist/index.html과 정적 루트 Index를 분리 생성한다. JS가 꺼져도 초기 화면이 보이며 활성화 시 정류장 검색이 동작한다. dev/preview /는 기존 실제 앱 모드를 유지한다. 정적 파일의 실제 조회/지도 요청은 계속 차단한다. 이전 ‘별도 web-preview.html만 열기’ 안내로 기본 Index 문제까지 해결됐다고 간주하지 않는다.

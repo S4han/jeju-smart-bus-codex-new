@@ -11,3 +11,4 @@ __pycache__/
 /web-preview.html
 /web-preview-screen.png
 /.preview-build/
+/web-preview-screen-noscript.png

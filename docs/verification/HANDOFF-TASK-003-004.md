@@ -4,6 +4,10 @@
 대상 저장소: S4han/jeju-smart-bus-codex-new.
 보존 브랜치: feat/task-003-development-foundation.
 
+## 미리보기 기본 진입점 최신 수정
+
+내장 Index가 원본 HTML을 계속 보여주는 문제를 수정했다. 실행용 소스 HTML은 app.html, App은 src/App.tsx, main.tsx는 bootstrap이다. 루트 index.html은 동일 App 초기 화면을 서버 렌더링한 독립 미리보기이며 npm run build로 재생성한다. 직접 수정하지 않는다. build는 실행용 dist/index.html과 정적 루트 Index를 분리 생성한다. JS가 꺼져도 초기 화면이 보이며 활성화 시 정류장 검색이 동작한다. dev/preview /는 기존 실제 앱 모드를 유지한다. 정적 파일의 실제 조회/지도 요청은 계속 차단한다. 이전 ‘별도 web-preview.html만 열기’ 안내로 기본 Index 문제까지 해결됐다고 간주하지 않는다.
+
 ## 지도 구현 최신 갱신
 
 NAVER 지도 동의 및 목록과 동일 마커 집합/양방향 선택 구현, 모의 SDK 브라우저 검증 완료. 실제 SDK/타일 표시 미검증이며 localhost 외 호스트와 독립 HTML에서는 지도 요청을 막는다. 관리 환경 허용 호스트/기존 Vercel/제공자 설정은 변경하지 않았다. 공개 Client ID는 기존 승인대로 실행 앱 빌드에만 전달하며 독립 미리보기에는 비운 별도 빌드를 사용한다. 문서/채팅/로그에 값 출력 없음. [지도 기록](TASK-004-MAP.md)을 읽고 실제 검증과 스텁 검증을 구분한다. 아래 지도 미구현 문구는 이전 기록이며 전체 TASK 완료는 아니다.

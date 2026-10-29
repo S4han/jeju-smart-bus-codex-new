@@ -19,7 +19,7 @@ export function LocationPicker({ kind = 'origin', model, onStationSelect }: {
   const origin = kind === 'origin';
   const label = origin ? '출발지' : '목적지';
   const [location] = useState(() => model ?? new LocalLocation(origin ? requestDevicePosition : undefined));
-  const state = useSyncExternalStore(location.subscribe, location.getSnapshot);
+  const state = useSyncExternalStore(location.subscribe, location.getSnapshot, location.getSnapshot);
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [query, setQuery] = useState('');

@@ -10,10 +10,10 @@
     "dev": "vite --host 0.0.0.0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "npm run typecheck && vite build && node scripts/check-client.mjs",
+    "build": "npm run typecheck && vite build && node scripts/finalize-dist.mjs && node scripts/check-client.mjs && node scripts/build-web-preview.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "api": "python server/local_api.py",
-    "build:preview": "npm run build && node scripts/build-web-preview.mjs"
+    "build:preview": "npm run build"
   },
   "dependencies": {
     "react": "^19.3.1",

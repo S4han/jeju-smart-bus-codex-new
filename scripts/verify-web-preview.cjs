@@ -6,7 +6,9 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
    const page=await browser.newPage({viewport:{width,height:900}});const errors=[];const network=[];
    page.on('pageerror',()=>errors.push('pageerror'));
    page.on('request',r=>{if(/^https?:/.test(r.url()))network.push('network');});
-   const html=fs.readFileSync('web-preview.html','utf8');
+   const html=fs.readFileSync('index.html','utf8');
+   assert.equal(html,fs.readFileSync('web-preview.html','utf8'));
+   assert.equal(html.includes('/src/main.tsx'),false);
    let surface=page;
    if(sandboxed) {
     await page.setContent('<iframe name="preview" sandbox="allow-scripts" style="width:100%;height:850px;border:0"></iframe>');
@@ -14,6 +16,7 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
     surface=page.frame({name:'preview'});
     assert.ok(surface);
    } else await page.setContent(html);
+   await surface.waitForFunction(()=>document.documentElement.dataset.appReady==='true');
    await surface.getByRole('heading',{name:'어디로 가시나요?',exact:true}).waitFor();
    const station=JSON.parse(fs.readFileSync('src/data/stations.json','utf8')).find(row=>row.id==='406000191');
    if(sandboxed && width===1180) await page.screenshot({path:'/workspace/jeju-smart-bus-codex-new/web-preview-screen.png'});
@@ -28,5 +31,14 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
    console.log(`Standalone HTML ${sandboxed?'sandbox iframe':'document'} ${width}px: renders without server, stop search works, live requests disabled, no external assets/errors`);
    await page.close();
   }
+  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:1180,height:900}});
+  const plain=await context.newPage();
+  await plain.setContent(fs.readFileSync('index.html','utf8'));
+  await plain.getByRole('heading',{name:'어디로 가시나요?',exact:true}).waitFor();
+  assert.equal(await plain.getByRole('region',{name:'출발지 지정',exact:true}).isVisible(),true);
+  assert.equal(await plain.getByText(/화면을 불러오는 중입니다/).count(),0);
+  await plain.screenshot({path:'/workspace/jeju-smart-bus-codex-new/web-preview-screen-noscript.png'});
+  console.log('Root Index without JavaScript: complete initial screen and input controls visible, no loading-only screen');
+  await context.close();
  }finally{await browser.close();}
 })().catch(error=>{console.error('Standalone preview check failed:',String(error.message).slice(0,700));process.exitCode=1;});

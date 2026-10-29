@@ -12,3 +12,6 @@ __pycache__/
 /web-preview-screen.png
 /.preview-build/
 /web-preview-screen-noscript.png
+
+/review-dist/
+/.vercel/

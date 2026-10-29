@@ -1,0 +1,16 @@
+node_modules/
+dist/
+review-dist/
+.preview-build/
+index.html
+web-preview.html
+work/
+scratch/
+docs/
+tasks/
+tests/
+server/
+.env
+.env.*
+*.sqlite
+*.png

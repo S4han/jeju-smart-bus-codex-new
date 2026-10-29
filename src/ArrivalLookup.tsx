@@ -3,6 +3,7 @@ import { ArrivalPanel, type ArrivalSnapshot } from './ArrivalPanel';
 import { requestArrivals } from './browser/arrivals';
 
 export function ArrivalLookup({ stationId, stationName }: { stationId: string | null; stationName: string | null }) {
+  const staticPreview = typeof document !== 'undefined' && document.documentElement.dataset.staticPreview === 'true';
   const [result, setResult] = useState<ArrivalSnapshot | null>(null);
   const [pending, setPending] = useState(false);
   const controller = useRef<AbortController | null>(null);
@@ -12,7 +13,7 @@ export function ArrivalLookup({ stationId, stationName }: { stationId: string | 
     return () => { window.removeEventListener('pagehide', clear); controller.current?.abort(); };
   }, [stationId]);
   const load = async () => {
-    if (!stationId || controller.current) return;
+    if (staticPreview || !stationId || controller.current) return;
     const request = new AbortController(); controller.current = request;
     setPending(true); setResult(null);
     const timer = window.setTimeout(() => request.abort(), 90_000);
@@ -28,8 +29,8 @@ export function ArrivalLookup({ stationId, stationName }: { stationId: string | 
   };
   return <>
     {stationId && <div className="arrival-panel">
-      <button type="button" disabled={pending} onClick={load}>{pending ? '도착정보 조회 중…' : '선택 정류장 도착정보 조회'}</button>
-      <p className="privacy-note">버튼을 누르면 공개 정류장 ID만 앱 서버에 전달합니다. 좌표는 전송하지 않습니다. 자동 갱신 없이 승인된 검증 예산 안에서 조회합니다.</p>
+      <button type="button" disabled={pending || staticPreview} onClick={load}>{staticPreview ? '화면 미리보기에서는 실시간 조회를 제공하지 않습니다' : pending ? '도착정보 조회 중…' : '선택 정류장 도착정보 조회'}</button>
+      <p className="privacy-note">{staticPreview ? '정류장 검색과 주변 목록을 확인할 수 있습니다. 실제 도착정보는 앱 실행 환경에서 조회할 수 있습니다.' : '버튼을 누르면 공개 정류장 ID만 앱 서버에 전달합니다. 좌표는 전송하지 않습니다. 자동 갱신 없이 승인된 검증 예산 안에서 조회합니다.'}</p>
     </div>}
     <ArrivalPanel selectedStationId={stationId} selectedStationName={stationName}
       snapshot={result?.stationId === stationId ? result : null} loading={pending && controller.current !== null} />

@@ -10,11 +10,11 @@ const sdk=require('./fixtures/naver-sdk.cjs');
   const page=await browser.newPage();
   await page.route('**/*',async route=>{
    const url=new URL(route.request().url());
-   if(url.hostname==='oapi.map.naver.com'){
+   if(['oapi.map.naver.com','nrbe.pstatic.net'].includes(url.hostname)){
     const referer=(await route.request().allHeaders()).referer||null;
     if(url.pathname==='/openapi/v3/maps.js'){
      entryReferrer=referer;
-     return route.fulfill({contentType:'text/javascript',body:sdk+';const proof=document.createElement("script");proof.src="https://oapi.map.naver.com/followup-proof.js";document.head.append(proof);'});
+     return route.fulfill({contentType:'text/javascript',body:sdk+';const proof=document.createElement("script");proof.src="https://nrbe.pstatic.net/followup-proof.js";document.head.append(proof);'});
     }
     followupReferrer=referer;
     return route.fulfill({contentType:'text/javascript',body:'window.__authChecked=true;'});

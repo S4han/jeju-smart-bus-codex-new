@@ -1,3 +1,33 @@
+# TASK-004 최신 인계 — 2026-10-29 (Asia/Seoul)
+
+대상 S4han/jeju-smart-bus-codex-new, 기준 브랜치 feat/task-003-development-foundation (e10c73c). 로컬 작업 /workspace/work/task004. 아래 과거 인계의 ‘지도 요청 0회’, ‘호스트 미허용’, ‘실행 전’은 당시 기록이며 현재 상태가 아니다. 이번 변경은 지정 브랜치의 로컬 커밋으로 보존하며 원격 push는 하지 않았다. 새 환경에는 로컬 커밋이 자동 반영되지 않으므로 전환 전에 보존 여부를 확인한다.
+
+## 현재 상태와 다음 작업
+
+최신 연결 진단: SDK/타일 경로와 별도로 nrbe 루트 GET 1회에서도 Envoy의 upstream remote connection failure와 HTTP 503을 확인했다. 브라우저 CSP 외부에서 재현됐으나 발생 계층은 미확정이다. [연결 진단](TASK-004-MAP-NETWORK-DIAGNOSIS.md)과 JSON을 참조한다. SDK 진입 누적 3회·BIS 19/19는 그대로이며 루트 진단은 별도 1회다.
+
+- TASK-004 부분 구현 유지. 지도 SDK/정적 이미지 HTTP 200 확인, 실제 타일 표시는 nrbe.map.naver.net HTTP 503으로 실패. 일반 장소 검색·시간표 대체 및 기존 게이트는 미완료. TASK-005 자동 착수 금지.
+- SDK 진입 누적 알려진 3회: 이전 환경 1회, 새 환경 최초 후속 1회, 사용자 명시 승인 추가 1회. 최초 후속 전 nrbe 미허용 사전 검사에서는 SDK 추가 요청 0회였다. 실패 후 자동 재시도 없음.
+- BIS 누적 19/19 소진. ledger 생성/초기화/예산 재사용 금지. 이번 지도 작업에서 실제 BIS 요청 0회.
+- 현재 세 지도 호스트는 enforced 정책에 포함된다. nrbe 503의 발생 계층은 미확정이고 환경 network_diagnostics는 null. 호스트를 다시 게시하거나 같은 ID를 재등록하라고 요구하지 않는다.
+- app.html에서 관측된 이미지 출처와 nrbe 스크립트 출처, HTTPS 승격을 보완했다. 수집 호스트는 계속 차단한다. 공개 Client ID 값·URL·좌표 로그 없음.
+- 초기 tilesloaded 전 로딩 안내 유지. 20초 내 완료되지 않으면 지도/리스너/타이머를 정리하고 목록과 실패 안내를 유지한다. 실패 후 페이지 내 SDK 재요청·Map 재생성 금지.
+- 다음 실제 검증은 승인된 1회가 소진됐으므로 실행하지 않는다. 두 결과 JSON/예약을 삭제·덮어쓰기하지 않는다. HTTP 503 원인 증거 없이 CSP 성공을 지도 성공으로 선언하지 않는다.
+
+## 결과와 재실행 잠금
+
+[TASK-004-MAP-FOLLOWUP.md](TASK-004-MAP-FOLLOWUP.md)에 변경/검증/제약을 기록했다. TASK-004-MAP-FOLLOWUP-RESULT.json은 최초 후속, TASK-004-MAP-APPROVED-RESULT.json은 추가 승인 실행의 불변 실측이다. scratch의 naver-followup-once.reserved 및 저장소 TASK-004-MAP-APPROVED.reserved를 보존한다. 각 실행기는 해당 기록이 있으면 브라우저 실행 전에 거부한다.
+
+## 최신 검증
+
+npm test: Vitest 139개 + Node guard 3개 통과. 타입/빌드/클라이언트 비밀값 검사 통과. 모의 SDK 390/1280px 동의·목록/핀 집합·양방향 선택·인증 실패·타일 타임아웃 검증 통과. 위치 삭제·pagehide·타일 완료의 타이머 정리, 실패 뒤 늦은 타일 이벤트 무효화도 가상 시계로 확인했다. CSP 모의/BIS 프록시 전 차단·독립 HTML/제한 iframe·JavaScript 없는 Index 통과. 실제 지도 성공은 미확인이다.
+
+기존 두 저장소·Vercel·메일 변경 금지 유지. 질문/로그에 Client ID 값을 노출하지 않는다. 변경은 새 저장소의 로컬 작업 폴더에만 있다.
+
+---
+
+다음은 이전 환경의 인계 원문이다. 최신 판정은 위 요약과 후속 결과를 우선한다.
+
 # TASK-003 완료 / TASK-004 환경 전환 인계
 
 기록일: 2026-10-28 (Asia/Seoul).

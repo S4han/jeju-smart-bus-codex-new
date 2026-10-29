@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { LocalPoint } from '../domain/location';
 import type { NearbyResult } from '../domain/nearby';
-import { hasMapClientId, loadNaverMaps, type MapInstance, type NaverMaps } from './naver';
+import { hasMapClientId, loadNaverMaps, markMapUnavailable, type MapInstance, type NaverMaps } from './naver';
 
 function pin(id: string, selected: boolean): HTMLElement {
   const element = document.createElement('span');
@@ -16,11 +16,18 @@ function Canvas({ point, stations, selectedId, onSelect }: {
 }) {
   const element = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState<{ maps: NaverMaps; map: MapInstance } | null>(null);
+  const [tilesReady, setTilesReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const callback = useRef(onSelect); callback.current = onSelect;
   useEffect(() => {
     let disposed = false; let map: MapInstance | null = null;
-    const destroy = () => { disposed = true; map?.destroy(); map = null; };
+    let tileTimer: number | undefined;
+    let removeTileListener: (() => void) | undefined;
+    const destroy = () => {
+      disposed = true; window.clearTimeout(tileTimer);
+      removeTileListener?.(); removeTileListener = undefined;
+      map?.destroy(); map = null;
+    };
     const unavailable = () => { destroy(); setReady(null); setFailed(true); };
     window.addEventListener('pagehide', destroy);
     window.addEventListener('jeju-map-unavailable', unavailable);
@@ -29,8 +36,14 @@ function Canvas({ point, stations, selectedId, onSelect }: {
       const created = new maps.Map(element.current, { center: new maps.LatLng(point.latitude, point.longitude), zoom: 15 });
       if (disposed) { created.destroy(); return; }
       map = created;
+      tileTimer = window.setTimeout(() => { if (!disposed) markMapUnavailable(); }, 20_000);
+      const listener = maps.Event.addListener(created, 'tilesloaded', () => {
+        if (disposed) return;
+        window.clearTimeout(tileTimer); setTilesReady(true);
+      });
+      removeTileListener = () => maps.Event.removeListener(listener);
       setReady({ maps, map });
-    }).catch(() => { if (!disposed) setFailed(true); });
+    }).catch(() => { if (!disposed) markMapUnavailable(); });
     return () => {
       window.removeEventListener('pagehide', destroy);
       window.removeEventListener('jeju-map-unavailable', unavailable); destroy();
@@ -60,7 +73,7 @@ function Canvas({ point, stations, selectedId, onSelect }: {
   }, [ready]);
   return <>
     {failed && <p role="status">지도를 확인하지 못했습니다. 등록 주소·연결·이용 한도를 확인해 주세요. 정류장 목록은 계속 이용할 수 있습니다.</p>}
-    {!failed && !ready && <p role="status">지도를 불러오는 중입니다.</p>}
+    {!failed && !tilesReady && <p role="status">지도를 불러오는 중입니다.</p>}
     <div ref={element} className="station-map" aria-label="주변 정류장 NAVER 지도" />
     <p className="privacy-note">지도에는 현재 목록과 같은 정류장만 표시합니다. 지도 확대·이동은 검색 반경이나 목록을 바꾸지 않습니다.</p>
   </>;

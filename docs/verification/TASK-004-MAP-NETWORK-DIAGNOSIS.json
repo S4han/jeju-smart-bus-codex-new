@@ -1,0 +1,33 @@
+{
+  "observedAtUtc": "2026-10-29T04:44:28.596217+00:00",
+  "request": {
+    "method": "GET",
+    "scheme": "https",
+    "host": "nrbe.map.naver.net",
+    "path": "/",
+    "maxResponseBytes": 2048,
+    "requests": 1,
+    "sdkPathRequested": false,
+    "tilePathRequested": false,
+    "bisPathRequested": false
+  },
+  "response": {
+    "status": 503,
+    "server": "envoy",
+    "contentType": "text/plain",
+    "body": "upstream connect error or disconnect/reset before headers. reset reason: remote connection failure"
+  },
+  "localPolicy": {
+    "version": 1,
+    "nrbeHostListed": true,
+    "vpnConfigured": false
+  },
+  "retainedEnvironmentDiagnostics": {
+    "historyStatus": "not_found",
+    "records": 0
+  },
+  "sdkEntryRequestsCumulative": 3,
+  "bisUsed": 19,
+  "bisLimit": 19,
+  "automaticRetry": false
+}

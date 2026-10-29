@@ -1,0 +1,27 @@
+{
+  "status": "stopped_without_retry",
+  "sdkRequests": 1,
+  "arrivalApiRequests": 0,
+  "requestsByHost": {
+    "oapi.map.naver.com": 2,
+    "nrbe.map.naver.net": 3,
+    "static.naver.net": 2,
+    "kr-col-ext.nelo.navercorp.com": 4
+  },
+  "failedByHost": {
+    "oapi.map.naver.com": 1,
+    "nrbe.map.naver.net": 3,
+    "static.naver.net": 2,
+    "kr-col-ext.nelo.navercorp.com": 4
+  },
+  "cspByHost": {
+    "oapi.map.naver.com script-src-elem": 1,
+    "nrbe.map.naver.net script-src-elem": 3,
+    "static.naver.net img-src": 2,
+    "kr-col-ext.nelo.navercorp.com connect-src": 4
+  },
+  "blockedBisRequests": 0,
+  "priorSdkEntryRequests": 1,
+  "bisUsed": 19,
+  "bisLimit": 19
+}

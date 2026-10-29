@@ -90,7 +90,7 @@ class HostedApiTest(unittest.TestCase):
  def test_real_http_entry_has_no_store_headers_and_is_disabled(self):
   import http.client,threading
   from http.server import ThreadingHTTPServer
-  from api.arrivals import handler
+  from server.vercel_entry import handler
   server=ThreadingHTTPServer(('127.0.0.1',0),handler);thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
   try:
    connection=http.client.HTTPConnection('127.0.0.1',server.server_port,timeout=5)

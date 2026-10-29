@@ -1,5 +1,12 @@
 # Vercel BIS API 기반 구현 — 저장소 연결 전 차단
 
+## 최신 배포 결과 및 보존 범위
+
+Python API를 포함한 f304bf5 배포는 Vercel GitHub 상태에서 failure였다. 제공된 상태에는 빌드 로그 읽기 명령만 있으며 구체 오류는 없다. 현재 Vercel 인증/로그 접근 도구가 없어 실패 원인을 확정하지 않았다. 이전 정적 배포를 정상화하기 위해 API 진입점은 server/vercel_entry.py로 보존하고 실제 api/arrivals.py 및 함수 설정을 배포 대상에서 제거한다. 정적 API 비활성 rewrite를 복구하고 서버 코드는 .vercelignore로 제외한다. 로컬 HTTP Handler 503 검증과 공유 장부 계약/테스트는 보존한다. 아래 함수 경로 설명은 최초 배포 시도 당시 설계이며 실제 함수 배포 성공 증거가 아니다.
+
+실패 배포 로그 위치: https://vercel.com/splendid3/jeju-smart-bus-codex-new/5YJDpNVayyKDhcmmSe9PnNu7h1vv . 사용자 계정에서 첫 빌드 오류를 확인해야 Python 배포 원인을 좁힐 수 있다. 오류 로그에 키/환경변수 값이 있으면 공유하지 않는다. 저장소도 아직 미연결이므로 공개 조회 활성화는 하지 않는다. 실제 BIS 사용은 23/30회·잔여 7회로 유지했다.
+
+
 확인일: 2026-10-29 (Asia/Seoul). 사용자 계속 진행 지시에 따라 TASK-004 FR-005/AC-005 조회 서버 경계를 준비했다. 실제 저장소/계정/유료 서비스는 만들지 않았다. 현재 누적 사용 23/30회·잔여 7회이며 이번 실제 BIS 요청 0회다.
 
 ## 서버 구현과 배포

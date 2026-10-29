@@ -22,9 +22,10 @@
       ]
     }
   ],
-  "functions": {
-    "api/arrivals.py": {
-      "includeFiles": "{server/**,src/data/stations.json,src/data/bis-verification-budget.json}"
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api-disabled.json"
     }
-  }
+  ]
 }
